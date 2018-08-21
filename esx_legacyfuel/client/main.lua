@@ -467,7 +467,7 @@ Citizen.CreateThread(function()
 						
 		if CurrentWeapon == 883325847 then
 			local MyCoords 		= GetEntityCoords(GetPlayerPed(-1))
-			local Vehicle  		= GetClosestVehicle(MyCoords.x, MyCoords.y, MyCoords.z, 3.0, false, 23)
+			local Vehicle  		= GetClosestVehicle(MyCoords.x, MyCoords.y, MyCoords.z, 3.0, false, 23) == GetPlayersLastVehicle() and GetPlayersLastVehicle() or 0
 
 			if Vehicle ~= 0 then
 				NearVehicleWithJerryCan = true
