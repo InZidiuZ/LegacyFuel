@@ -595,7 +595,7 @@ Citizen.CreateThread(function()
 				end
 			end
 
-			if rpmfuelusage < 10 then
+			if rpmfuelusage < Config.VehicleFailure then
 				SetVehicleUndriveable(vehicle, true)
 			elseif rpmfuelusage == 0 then
 				SetVehicleEngineOn(vehicle, false, false, false)
