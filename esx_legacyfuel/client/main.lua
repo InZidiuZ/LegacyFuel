@@ -583,13 +583,18 @@ Citizen.CreateThread(function()
 				Citizen.Wait(15000)
 			end
 
-			for i=1, #Vehicles, 1 do
+			for i = 1, #Vehicles do
 				if Vehicles[i].plate == plate then
 					SetVehicleFuelLevel(vehicle, rpmfuelusage)
-					TriggerServerEvent('LegacyFuel:UpdateServerFuelTable', plate, round(GetVehicleFuelLevel(vehicle), 1))
 
-					table.remove(Vehicles, i)
-					table.insert(Vehicles, {plate = plate, fuel = rpmfuelusage})
+					local updatedfuel = round(GetVehicleFuelLevel(vehicle), 1)
+
+					if updatedfuel ~= 0 then
+						TriggerServerEvent('LegacyFuel:UpdateServerFuelTable', plate, updatedfuel)
+
+						table.remove(Vehicles, i)
+						table.insert(Vehicles, {plate = plate, fuel = rpmfuelusage})
+					end
 
 					break
 				end
