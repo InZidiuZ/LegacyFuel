@@ -17,7 +17,7 @@ RegisterServerEvent('LegacyFuel:UpdateServerFuelTable')
 AddEventHandler('LegacyFuel:UpdateServerFuelTable', function(plate, fuel)
 	local found = false
 
-	for i=1, #Vehicles, 1 do
+	for i = 1, #Vehicles do
 		if Vehicles[i].plate == plate then 
 			found = true
 			
@@ -25,7 +25,6 @@ AddEventHandler('LegacyFuel:UpdateServerFuelTable', function(plate, fuel)
 				table.remove(Vehicles, i)
 				table.insert(Vehicles, {plate = plate, fuel = fuel})
 			end
-
 			break 
 		end
 	end
@@ -37,7 +36,7 @@ end)
 
 RegisterServerEvent('LegacyFuel:CheckServerFuelTable')
 AddEventHandler('LegacyFuel:CheckServerFuelTable', function(plate)
-	for i=1, #Vehicles, 1 do
+	for i = 1, #Vehicles do
 		if Vehicles[i].plate == plate then
 			local vehInfo = {plate = Vehicles[i].plate, fuel = Vehicles[i].fuel}
 

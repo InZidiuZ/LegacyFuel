@@ -60,7 +60,7 @@ end
 function loadAnimDict(dict)
 	while(not HasAnimDictLoaded(dict)) do
 		RequestAnimDict(dict)
-		Citizen.Wait(0)
+		Citizen.Wait(1)
 	end
 end
 
@@ -78,13 +78,14 @@ end
 
 Citizen.CreateThread(function()
 	while true do
-		Citizen.Wait(0)
+		Citizen.Wait(1)
+
 		if not InBlacklistedVehicle then
 			if Timer then
 				DisplayHud()
 			end
 
-			if(nearPump and IsCloseToLastVehicle) then
+			if nearPump and IsCloseToLastVehicle  then
 				local vehicle  = GetPlayersLastVehicle()
 				local fuel 	   = round(GetVehicleFuelLevel(vehicle), 1)
 				
@@ -148,7 +149,7 @@ Citizen.CreateThread(function()
 						FuelVehicle()
 					end
 				end
-			elseif NearVehicleWithJerryCan and not nearPump then
+			elseif NearVehicleWithJerryCan and not nearPump and Config.EnableJerryCans then
 				local vehicle  = GetPlayersLastVehicle()
 				local coords   = GetEntityCoords(vehicle)
 				local fuel 	   = round(GetVehicleFuelLevel(vehicle), 1)
@@ -203,12 +204,16 @@ Citizen.CreateThread(function()
 					end
 				end
 			end
+		else
+			Citizen.Wait(500)
 		end
 	end
 end)
 
 Citizen.CreateThread(function()
 	while true do
+		Citizen.Wait(500)
+
 		if IsFueling then
 			local vehicle  = GetPlayersLastVehicle()
 			local plate    = GetVehicleNumberPlateText(vehicle)
@@ -223,7 +228,7 @@ Citizen.CreateThread(function()
 			if newfuel < 100 then
 				SetVehicleFuelLevel(vehicle, newfuel)
 
-				for i=1, #Vehicles, 1 do
+				for i = 1, #Vehicles do
 					if Vehicles[i].plate == plate then
 						TriggerServerEvent('LegacyFuel:UpdateServerFuelTable', plate, round(GetVehicleFuelLevel(vehicle), 1))
 
@@ -245,7 +250,7 @@ Citizen.CreateThread(function()
 
 				IsFueling = false
 
-				for i=1, #Vehicles, 1 do
+				for i = 1, #Vehicles do
 					if Vehicles[i].plate == plate then
 						TriggerServerEvent('LegacyFuel:UpdateServerFuelTable', plate, round(GetVehicleFuelLevel(vehicle), 1))
 
@@ -275,7 +280,7 @@ Citizen.CreateThread(function()
 				if newfuel < 100 then
 					SetVehicleFuelLevel(vehicle, newfuel)
 
-					for i=1, #Vehicles, 1 do
+					for i = 1, #Vehicles do
 						if Vehicles[i].plate == plate then
 							TriggerServerEvent('LegacyFuel:UpdateServerFuelTable', plate, round(GetVehicleFuelLevel(vehicle), 1))
 
@@ -297,7 +302,7 @@ Citizen.CreateThread(function()
 
 					IsFuelingWithJerryCan = false
 
-					for i=1, #Vehicles, 1 do
+					for i = 1, #Vehicles do
 						if Vehicles[i].plate == plate then
 							TriggerServerEvent('LegacyFuel:UpdateServerFuelTable', plate, round(GetVehicleFuelLevel(vehicle), 1))
 
@@ -319,7 +324,7 @@ Citizen.CreateThread(function()
 
 				IsFuelingWithJerryCan = false
 
-				for i=1, #Vehicles, 1 do
+				for i = 1, #Vehicles do
 					if Vehicles[i].plate == plate then
 						TriggerServerEvent('LegacyFuel:UpdateServerFuelTable', plate, round(GetVehicleFuelLevel(vehicle), 1))
 
@@ -331,12 +336,13 @@ Citizen.CreateThread(function()
 				end
 			end
 		end
-		Citizen.Wait(500)
 	end
 end)
 
 Citizen.CreateThread(function()
 	while true do
+		Citizen.Wait(250)
+
 		if IsPedInAnyVehicle(GetPlayerPed(-1)) then
 			Citizen.Wait(2500)
 
@@ -344,16 +350,21 @@ Citizen.CreateThread(function()
 		else
 			Timer = false
 		end
-
-		Citizen.Wait(250)
 	end
 end)
 
 Citizen.CreateThread(function()
 	while true do
+		Citizen.Wait(1500)
+
+		nearPump 			 	= false
+		IsCloseToLastVehicle 	= false
+		found 				 	= false
+		NearVehicleWithJerryCan = false
+
 		local myCoords = GetEntityCoords(GetPlayerPed(-1))
 		
-		for i=1, #models, 1 do
+		for i = 1, #models do
 			local closestPump = GetClosestObjectOfType(myCoords.x, myCoords.y, myCoords.z, 1.5, models[i], false, false)
 			
 			if closestPump ~= nil and closestPump ~= 0 then
@@ -386,7 +397,7 @@ Citizen.CreateThread(function()
 
 			Citizen.Wait(500)
 
-			for i=1, #Vehicles, 1 do
+			for i = 1, #Vehicles do
 				if Vehicles[i].plate == plate then
 					found = true
 					fuel  = round(Vehicles[i].fuel, 1)
@@ -409,7 +420,7 @@ Citizen.CreateThread(function()
 
 		local currentVeh = GetDisplayNameFromVehicleModel(GetEntityModel(GetVehiclePedIsUsing(GetPlayerPed(-1))))
 
-		for i=1, #blacklistedVehicles, 1 do
+		for i = 1, #blacklistedVehicles do
 			if blacklistedVehicles[i] == currentVeh then
 				InBlacklistedVehicle = true
 				found 				 = true
@@ -432,13 +443,6 @@ Citizen.CreateThread(function()
 				NearVehicleWithJerryCan = true
 			end
 		end
-
-		Citizen.Wait(1500)
-
-		nearPump 			 	= false
-		IsCloseToLastVehicle 	= false
-		found 				 	= false
-		NearVehicleWithJerryCan = false
 	end
 end)
 
@@ -449,7 +453,7 @@ end
 function GetSeatPedIsIn(ped)
 	local vehicle = GetVehiclePedIsIn(ped, false)
 
-	for i=-2, GetVehicleMaxNumberOfPassengers(vehicle) do
+	for i = -2, GetVehicleMaxNumberOfPassengers(vehicle) do
 		if GetPedInVehicleSeat(vehicle, i) == ped then
 			return i
 		end
@@ -491,7 +495,7 @@ RegisterNetEvent('LegacyFuel:ReturnFuelFromServerTable')
 AddEventHandler('LegacyFuel:ReturnFuelFromServerTable', function(vehInfo)
 	local fuel   = round(vehInfo.fuel, 1)
 
-	for i=1, #Vehicles, 1 do
+	for i = 1, #Vehicles do
 		if Vehicles[i].plate == vehInfo.plate then
 			table.remove(Vehicles, i)
 
@@ -504,6 +508,8 @@ end)
 
 Citizen.CreateThread(function()
 	while true do
+		Citizen.Wait(5000)
+
 		local vehicle = GetVehiclePedIsIn(GetPlayerPed(-1))
 		local engine  = Citizen.InvokeNative(0xAE31E7DF9B5B132E, vehicle)
 
@@ -567,8 +573,6 @@ Citizen.CreateThread(function()
 				SetVehicleUndriveable(vehicle, false)
 			end
 		end
-
-		Citizen.Wait(5000)
 	end
 end)
 
@@ -601,7 +605,7 @@ local gas_stations = {
 
 Citizen.CreateThread(function()
 	if Config.EnableBlips then
-		for k,v in ipairs(gas_stations) do
+		for k, v in ipairs(gas_stations) do
 			local blip = AddBlipForCoord(v.x, v.y, v.z)
 
 			SetBlipSprite(blip, 361)
