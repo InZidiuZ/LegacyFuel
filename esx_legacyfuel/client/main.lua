@@ -146,7 +146,6 @@ Citizen.CreateThread(function()
 						ClearPedTasksImmediately(GetPlayerPed(-1))
 
 						if GetSelectedPedWeapon(GetPlayerPed(-1)) ~= -1569615261 then
-
 							SetCurrentPedWeapon(GetPlayerPed(-1), -1569615261, true)
 							Citizen.Wait(1000)
 						end
