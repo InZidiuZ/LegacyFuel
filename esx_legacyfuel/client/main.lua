@@ -509,8 +509,8 @@ function DisplayHud()
 		local vehicle = GetPlayersLastVehicle()
 		local fuel    = math.ceil(round(GetVehicleFuelLevel(vehicle), 1))
 		local speed   = GetEntitySpeed(vehicle)
-		local kmh 	  =	round(speed * 3.6, 0)
-		local mph 	  = round(speed * 2.236936, 0)
+		local kmh     = round(speed * 3.6, 0)
+		local mph     = round(speed * 2.236936, 0)
 
 		if fuel == 0 then
 			fuel = "0"
