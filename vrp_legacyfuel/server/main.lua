@@ -6,7 +6,7 @@ vRPclient = Tunnel.getInterface("vRP")
 AddEventHandler('LegacyFuel:PayFuel', function(price)
 	local user_id = vRP.getUserId(source)
 	local amount  = round(price, 0)
-	vRP.tryFullPayment(user_id, amount)
+	vRP.tryPayment(user_id, amount)
 	vRPclient._notify(source, "You paid ~g~$"..amount)
 end)
 
