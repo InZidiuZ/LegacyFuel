@@ -503,11 +503,14 @@ function GetSeatPedIsIn(ped)
 end
 
 function DisplayHud()
-	if IsPedInAnyVehicle(GetPlayerPed(-1), false) and GetSeatPedIsIn(GetPlayerPed(-1)) == -1 then
+	local playerPed = GetPlayerPed(-1)
+
+	if Config.ShouldDisplayHud and IsPedInAnyVehicle(playerPed, false) and GetSeatPedIsIn(playerPed) == -1 then
 		local vehicle = GetPlayersLastVehicle()
 		local fuel    = math.ceil(round(GetVehicleFuelLevel(vehicle), 1))
-		local kmh 	  =	round(GetEntitySpeed(vehicle) * 3.6, 0)
-		local mph 	  = round(GetEntitySpeed(vehicle) * 2.236936, 0)
+		local speed   = GetEntitySpeed(vehicle)
+		local kmh     = round(speed * 3.6, 0)
+		local mph     = round(speed * 2.236936, 0)
 
 		if fuel == 0 then
 			fuel = "0"
