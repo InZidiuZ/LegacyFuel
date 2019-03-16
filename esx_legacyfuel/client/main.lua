@@ -315,7 +315,7 @@ Citizen.CreateThread(function()
 				Citizen.Wait(150)
 				SetPedAmmo(GetPlayerPed(-1), 883325847, round(jerrynew, 0))
 
-				if newfuel < 100 then
+				if newfuel < (maxfuel) then
 					SetVehicleFuelLevel(vehicle, newfuel)
 
 					for i = 1, #Vehicles do
