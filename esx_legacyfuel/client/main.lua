@@ -25,8 +25,6 @@ local IsFueling 			  = false
 local IsFuelingWithJerryCan   = false
 local InBlacklistedVehicle	  = false
 local NearVehicleWithJerryCan = false
-local price 				  = 0
-local cash 					  = 0
 
 function DrawText3Ds(x,y,z, text)
     local onScreen,_x,_y=World3dToScreen2d(x,y,z)
@@ -87,7 +85,7 @@ Citizen.CreateThread(function()
 				DisplayHud()
 			end
 
-			if nearPump and IsCloseToLastVehicle then
+			if nearPump and IsCloseToLastVehicle  then
 				local vehicle  = GetPlayersLastVehicle()
 				local fuel 	   = round(GetVehicleFuelLevel(vehicle), 1)
 				
@@ -97,7 +95,7 @@ Citizen.CreateThread(function()
 					local position = GetEntityCoords(vehicle)
 
 					DrawText3Ds(pumpLoc['x'], pumpLoc['y'], pumpLoc['z'], "Press ~g~G ~w~to cancel the fueling of your vehicle. $~r~" .. price .. " ~w~+  tax")
-					DrawText3Ds(position.x, position.y, position.z + 0.5, fuel .. "%")
+					DrawText3Ds(position.x, position.y, position.z + 0.5, fuel .. "L")
 					
 					DisableControlAction(0, 0, true) -- Changing view (V)
 					DisableControlAction(0, 22, true) -- Jumping (SPACE)
@@ -123,21 +121,17 @@ Citizen.CreateThread(function()
 						loadAnimDict("reaction@male_stand@small_intro@forward")
 						TaskPlayAnim(GetPlayerPed(-1), "reaction@male_stand@small_intro@forward", "react_forward_small_intro_a", 1.0, 2, -1, 49, 0, 0, 0, 0)
 
-						TriggerServerEvent('LegacyFuel:PayFuel', price)
 						Citizen.Wait(2500)
 						ClearPedTasksImmediately(GetPlayerPed(-1))
 						FreezeEntityPosition(GetPlayerPed(-1), false)
 						FreezeEntityPosition(vehicle, false)
 
-						price = 0
 						IsFueling = false
 					end
-				elseif fuel > 95.0 then
+				elseif fuel > Citizen.InvokeNative(0x642FC12F, vehicle, "CHandlingData", "fPetrolTankVolume", Citizen.ReturnResultAnyway(), Citizen.ResultAsFloat()) then
 					DrawText3Ds(pumpLoc['x'], pumpLoc['y'], pumpLoc['z'], "Vehicle is too filled with gas to be fueled")
-				elseif cash <= 0 then
-					DrawText3Ds(pumpLoc['x'], pumpLoc['y'], pumpLoc['z'], "You currently don't have enough money on you to buy fuel with")
 				else
-					DrawText3Ds(pumpLoc['x'], pumpLoc['y'], pumpLoc['z'], "Press ~g~G ~w~to fuel your vehicle. $~r~0.5/~w~gallon + tax")
+					DrawText3Ds(pumpLoc['x'], pumpLoc['y'], pumpLoc['z'], "Press ~g~G ~w~to fuel your vehicle.")
 					
 					if IsControlJustReleased(0, 47) then
 						local vehicle = GetPlayersLastVehicle()
@@ -162,7 +156,7 @@ Citizen.CreateThread(function()
 				local jerrycan = GetAmmoInPedWeapon(GetPlayerPed(-1), 883325847)
 				
 				if IsFuelingWithJerryCan then
-					DrawText3Ds(coords.x, coords.y, coords.z + 0.5, "Press ~g~G ~w~to cancel fueling the vehicle. Currently at: " .. fuel .. "% - Jerry Can: " .. jerrycan)
+					DrawText3Ds(coords.x, coords.y, coords.z + 0.5, "Press ~g~G ~w~to cancel fueling the vehicle. Currently at: " .. fuel .. "L - Jerry Can: " .. jerrycan)
 
 					DisableControlAction(0, 0, true) -- Changing view (V)
 					DisableControlAction(0, 22, true) -- Jumping (SPACE)
@@ -227,63 +221,34 @@ Citizen.CreateThread(function()
 			local integer  = math.random(6, 10)
 			local fuelthis = integer / 10
 			local newfuel  = fuel + fuelthis
+			local maxfuel  = Citizen.InvokeNative(0x642FC12F, vehicle, "CHandlingData", "fPetrolTankVolume", Citizen.ReturnResultAnyway(), Citizen.ResultAsFloat())
 
-			price = price + fuelthis * 0.5 * 1.1
+			TriggerServerEvent('LegacyFuel:CheckServerFuelTable', plate)
+			Citizen.Wait(150)
 
-			if cash >= price then
-				TriggerServerEvent('LegacyFuel:CheckServerFuelTable', plate)
-				Citizen.Wait(150)
+			if newfuel < (maxfuel) then
+				SetVehicleFuelLevel(vehicle, newfuel)
 
-				if newfuel < 100 then
-					SetVehicleFuelLevel(vehicle, newfuel)
+				for i = 1, #Vehicles do
+					if Vehicles[i].plate == plate then
+						TriggerServerEvent('LegacyFuel:UpdateServerFuelTable', plate, round(GetVehicleFuelLevel(vehicle), 1))
 
-					for i = 1, #Vehicles do
-						if Vehicles[i].plate == plate then
-							TriggerServerEvent('LegacyFuel:UpdateServerFuelTable', plate, round(GetVehicleFuelLevel(vehicle), 1))
+						table.remove(Vehicles, i)
+						table.insert(Vehicles, {plate = plate, fuel = newfuel})
 
-							table.remove(Vehicles, i)
-							table.insert(Vehicles, {plate = plate, fuel = newfuel})
-
-							break
-						end
-					end
-				else
-					SetVehicleFuelLevel(vehicle, 100.0)
-					loadAnimDict("reaction@male_stand@small_intro@forward")
-					TaskPlayAnim(GetPlayerPed(-1), "reaction@male_stand@small_intro@forward", "react_forward_small_intro_a", 1.0, 2, -1, 49, 0, 0, 0, 0)
-
-					TriggerServerEvent('LegacyFuel:PayFuel', price)
-					Citizen.Wait(2500)
-					ClearPedTasksImmediately(GetPlayerPed(-1))
-					FreezeEntityPosition(GetPlayerPed(-1), false)
-					FreezeEntityPosition(vehicle, false)
-
-					price = 0
-					IsFueling = false
-
-					for i = 1, #Vehicles do
-						if Vehicles[i].plate == plate then
-							TriggerServerEvent('LegacyFuel:UpdateServerFuelTable', plate, round(GetVehicleFuelLevel(vehicle), 1))
-
-							table.remove(Vehicles, i)
-							table.insert(Vehicles, {plate = plate, fuel = newfuel})
-
-							break
-						end
+						break
 					end
 				end
 			else
-				SetVehicleFuelLevel(vehicle, newfuel)
+				SetVehicleFuelLevel(vehicle, maxfuel)
 				loadAnimDict("reaction@male_stand@small_intro@forward")
 				TaskPlayAnim(GetPlayerPed(-1), "reaction@male_stand@small_intro@forward", "react_forward_small_intro_a", 1.0, 2, -1, 49, 0, 0, 0, 0)
 
-				TriggerServerEvent('LegacyFuel:PayFuel', price)
 				Citizen.Wait(2500)
 				ClearPedTasksImmediately(GetPlayerPed(-1))
 				FreezeEntityPosition(GetPlayerPed(-1), false)
 				FreezeEntityPosition(vehicle, false)
 
-				price = 0
 				IsFueling = false
 
 				for i = 1, #Vehicles do
@@ -307,13 +272,14 @@ Citizen.CreateThread(function()
 			local jerryfuel = fuelthis * 100
 			local jerrycurr = GetAmmoInPedWeapon(GetPlayerPed(-1), 883325847)
 			local jerrynew  = jerrycurr - jerryfuel
+			local maxfuel  = Citizen.InvokeNative(0x642FC12F, vehicle, "CHandlingData", "fPetrolTankVolume", Citizen.ReturnResultAnyway(), Citizen.ResultAsFloat())
 
 			if jerrycurr >= jerryfuel then
 				TriggerServerEvent('LegacyFuel:CheckServerFuelTable', plate)
 				Citizen.Wait(150)
 				SetPedAmmo(GetPlayerPed(-1), 883325847, round(jerrynew, 0))
 
-				if newfuel < 100 then
+				if newfuel < (maxfuel) then
 					SetVehicleFuelLevel(vehicle, newfuel)
 
 					for i = 1, #Vehicles do
@@ -327,7 +293,7 @@ Citizen.CreateThread(function()
 						end
 					end
 				else
-					SetVehicleFuelLevel(vehicle, 100.0)
+					SetVehicleFuelLevel(vehicle, maxfuel)
 					loadAnimDict("reaction@male_stand@small_intro@forward")
 					TaskPlayAnim(GetPlayerPed(-1), "reaction@male_stand@small_intro@forward", "react_forward_small_intro_a", 1.0, 2, -1, 49, 0, 0, 0, 0)
 
@@ -467,10 +433,6 @@ Citizen.CreateThread(function()
 
 		if not found then
 			InBlacklistedVehicle = false
-		end
-
-		if nearPump then
-			TriggerServerEvent('LegacyFuel:CheckCashOnHand')
 		end
 
 		local CurrentWeapon = GetSelectedPedWeapon(GetPlayerPed(-1))
@@ -617,11 +579,6 @@ Citizen.CreateThread(function()
 			end
 		end
 	end
-end)
-
-RegisterNetEvent('LegacyFuel:RecieveCashOnHand')
-AddEventHandler('LegacyFuel:RecieveCashOnHand', function(cb)
-	cash = cb
 end)
 
 local gas_stations = {
