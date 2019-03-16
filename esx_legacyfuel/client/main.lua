@@ -132,7 +132,7 @@ Citizen.CreateThread(function()
 						price = 0
 						IsFueling = false
 					end
-				elseif fuel > Citizen.InvokeNative(0x642FC12F, vehicle, "CHandlingData", "fPetrolTankVolume", Citizen.ReturnResultAnyway(), Citizen.ResultAsFloat()) then
+				elseif fuel >= Citizen.InvokeNative(0x642FC12F, vehicle, "CHandlingData", "fPetrolTankVolume", Citizen.ReturnResultAnyway(), Citizen.ResultAsFloat()) then
 					DrawText3Ds(pumpLoc['x'], pumpLoc['y'], pumpLoc['z'], "Vehicle is too filled with gas to be fueled")
 				elseif cash <= 0 then
 					DrawText3Ds(pumpLoc['x'], pumpLoc['y'], pumpLoc['z'], "You currently don't have enough money on you to buy fuel with")
@@ -445,7 +445,7 @@ Citizen.CreateThread(function()
 			end
 
 			if not found then
-				integer = math.random(200, 800)
+				integer = math.random(200, 600)
 				fuel 	= integer / 10
 
 				table.insert(Vehicles, {plate = plate, fuel = fuel})
