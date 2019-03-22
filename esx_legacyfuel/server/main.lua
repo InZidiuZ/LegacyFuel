@@ -9,6 +9,13 @@ AddEventHandler('LegacyFuel:PayFuel', function(price)
 	xPlayer.removeMoney(amount)
 end)
 
+RegisterServerEvent('LegacyFuel:PayJerryCanFuel')
+AddEventHandler('LegacyFuel:PayJerryCanFuel', function(price)
+	local xPlayer = ESX.GetPlayerFromId(source)
+
+	xPlayer.removeMoney(100)
+end)
+
 local Vehicles = {
 	{ plate = '87OJP476', fuel = 50}
 }
