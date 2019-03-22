@@ -74,8 +74,32 @@ function FuelVehicle()
 	FreezeEntityPosition(ped, true)
 	FreezeEntityPosition(vehicle, false)
 	SetVehicleEngineOn(vehicle, false, false, false)
-	loadAnimDict("timetable@gardener@filling_can")
-	TaskPlayAnim(ped, "timetable@gardener@filling_can", "gar_ig_5_filling_can", 1.0, 2, -1, 49, 0, 0, 0, 0)
+	loadAnimDict("reaction@male_stand@small_intro@forward")
+	TaskPlayAnim(ped, "reaction@male_stand@small_intro@forward", "react_forward_small_intro_a", 1.0, 2, -1, 49, 0, 0, 0, 0)
+end
+
+function JerryFuelVehicle()
+	local ped 	  = GetPlayerPed(-1)
+	local coords  = GetEntityCoords(ped)
+	local vehicle = GetPlayersLastVehicle()
+
+	FreezeEntityPosition(ped, true)
+	FreezeEntityPosition(vehicle, false)
+	SetVehicleEngineOn(vehicle, false, false, false)
+	loadAnimDict("weapon@w_sp_jerrycan")
+	TaskPlayAnim(ped, "weapon@w_sp_jerrycan", "fire", 1.0, 2, -1, 49, 0, 0, 0, 0)
+end
+
+function StopFuelVehicle()
+	local ped 	  = GetPlayerPed(-1)
+	local coords  = GetEntityCoords(ped)
+	local vehicle = GetPlayersLastVehicle()
+
+	FreezeEntityPosition(ped, true)
+	FreezeEntityPosition(vehicle, false)
+	SetVehicleEngineOn(vehicle, false, false, false)
+	loadAnimDict("weapon@w_sp_jerrycan")
+	TaskPlayAnim(ped, "weapon@w_sp_jerrycan", "fire_outro", 1.0, 2, -1, 49, 0, 0, 0, 0)
 end
 
 Citizen.CreateThread(function()
@@ -120,9 +144,7 @@ Citizen.CreateThread(function()
 					DisableControlAction(1, 323, true) -- Handsup (X)
 
 					if IsControlJustReleased(0, 47) then
-						loadAnimDict("reaction@male_stand@small_intro@forward")
-						TaskPlayAnim(GetPlayerPed(-1), "reaction@male_stand@small_intro@forward", "react_forward_small_intro_a", 1.0, 2, -1, 49, 0, 0, 0, 0)
-
+						
 						TriggerServerEvent('LegacyFuel:PayFuel', price)
 						Citizen.Wait(2500)
 						ClearPedTasksImmediately(GetPlayerPed(-1))
@@ -155,6 +177,31 @@ Citizen.CreateThread(function()
 						FuelVehicle()
 					end
 				end
+		    ----------------------
+            --- Fill Jerry Can ---
+            ----------------------		   
+			elseif nearPump then
+			-- Not enough money and jerry can is not in your hand
+			if cash <= 0 and GetCurrentPedWeapon(GetPlayerPed(-1), 883325847, false) then
+					DrawText3Ds(pumpLoc['x'], pumpLoc['y'], pumpLoc['z'], "You currently don't have enough money on you to buy fuel for your jerrycan")
+			-- Jerry can is equipped and is full		
+			elseif GetCurrentPedWeapon(GetPlayerPed(-1), 883325847, false) and GetAmmoInPedWeapon(GetPlayerPed(-1), 883325847) >=100 then
+				DrawText3Ds(pumpLoc['x'], pumpLoc['y'], pumpLoc['z'], "Your jerrycan is already full")
+				elseif GetCurrentPedWeapon(GetPlayerPed(-1), 883325847, true) and cash >= 0 and GetAmmoInPedWeapon(GetPlayerPed(-1), 883325847) <100 then
+					DrawText3Ds(pumpLoc['x'], pumpLoc['y'], pumpLoc['z'], "Press ~g~G ~w~to fuel your jerrycan. $~g~100 + tax")
+                        if IsControlJustReleased(0, 47) then
+						loadAnimDict("reaction@male_stand@small_intro@forward")
+						TaskPlayAnim(GetPlayerPed(-1), "reaction@male_stand@small_intro@forward", "react_forward_small_intro_a", 1.0, 2, -1, 49, 0, 0, 0, 0)
+
+						Citizen.Wait(2500)
+						ClearPedTasksImmediately(GetPlayerPed(-1))
+						FreezeEntityPosition(GetPlayerPed(-1), false)
+                    SetPedAmmo(GetPlayerPed(-1), 883325847, 100)
+					TriggerServerEvent('LegacyFuel:PayJerryCanFuel')
+					NotificationMessage('~g~Thank You! ~s~Your jerrycan is now ~g~full.')
+				end	
+			end
+			----------------------------------------------------------------------------------------------------------------------------------------------------		
 			elseif NearVehicleWithJerryCan and not nearPump and Config.EnableJerryCans then
 				local vehicle  = GetPlayersLastVehicle()
 				local coords   = GetEntityCoords(vehicle)
@@ -185,10 +232,9 @@ Citizen.CreateThread(function()
 					DisableControlAction(1, 323, true) -- Handsup (X)
 
 					if IsControlJustReleased(0, 47) then
-						loadAnimDict("reaction@male_stand@small_intro@forward")
-						TaskPlayAnim(GetPlayerPed(-1), "reaction@male_stand@small_intro@forward", "react_forward_small_intro_a", 1.0, 2, -1, 49, 0, 0, 0, 0)
+						StopFuelVehicle()
 
-						Citizen.Wait(2500)
+						Citizen.Wait(700)
 						ClearPedTasksImmediately(GetPlayerPed(-1))
 						FreezeEntityPosition(GetPlayerPed(-1), false)
 						FreezeEntityPosition(vehicle, false)
@@ -201,12 +247,12 @@ Citizen.CreateThread(function()
 					if IsControlJustReleased(0, 47) then
 						local vehicle = GetPlayersLastVehicle()
 						local plate   = GetVehicleNumberPlateText(vehicle)
-
+        
 						ClearPedTasksImmediately(GetPlayerPed(-1))
 
 						IsFuelingWithJerryCan = true
 
-						FuelVehicle()
+						JerryFuelVehicle()
 					end
 				end
 			end
@@ -225,7 +271,7 @@ Citizen.CreateThread(function()
 			local plate    = GetVehicleNumberPlateText(vehicle)
 			local fuel 	   = GetVehicleFuelLevel(vehicle)
 			local integer  = math.random(6, 10)
-			local fuelthis = integer / 10
+			local fuelthis = integer / 100
 			local newfuel  = fuel + fuelthis
 			local maxfuel  = Citizen.InvokeNative(0x642FC12F, vehicle, "CHandlingData", "fPetrolTankVolume", Citizen.ReturnResultAnyway(), Citizen.ResultAsFloat())
 
@@ -250,8 +296,7 @@ Citizen.CreateThread(function()
 					end
 				else
 					SetVehicleFuelLevel(vehicle, maxfuel)
-					loadAnimDict("reaction@male_stand@small_intro@forward")
-					TaskPlayAnim(GetPlayerPed(-1), "reaction@male_stand@small_intro@forward", "react_forward_small_intro_a", 1.0, 2, -1, 49, 0, 0, 0, 0)
+
 
 					TriggerServerEvent('LegacyFuel:PayFuel', price)
 					Citizen.Wait(2500)
@@ -275,8 +320,6 @@ Citizen.CreateThread(function()
 				end
 			else
 				SetVehicleFuelLevel(vehicle, newfuel)
-				loadAnimDict("reaction@male_stand@small_intro@forward")
-				TaskPlayAnim(GetPlayerPed(-1), "reaction@male_stand@small_intro@forward", "react_forward_small_intro_a", 1.0, 2, -1, 49, 0, 0, 0, 0)
 
 				TriggerServerEvent('LegacyFuel:PayFuel', price)
 				Citizen.Wait(2500)
@@ -305,7 +348,7 @@ Citizen.CreateThread(function()
 			local integer   = math.random(6, 10)
 			local fuelthis  = integer / 10
 			local newfuel   = fuel + fuelthis
-			local jerryfuel = fuelthis * 100
+			local jerryfuel = fuelthis * 10
 			local jerrycurr = GetAmmoInPedWeapon(GetPlayerPed(-1), 883325847)
 			local jerrynew  = jerrycurr - jerryfuel
 			local maxfuel  = Citizen.InvokeNative(0x642FC12F, vehicle, "CHandlingData", "fPetrolTankVolume", Citizen.ReturnResultAnyway(), Citizen.ResultAsFloat())
@@ -330,10 +373,10 @@ Citizen.CreateThread(function()
 					end
 				else
 					SetVehicleFuelLevel(vehicle, maxfuel)
-					loadAnimDict("reaction@male_stand@small_intro@forward")
-					TaskPlayAnim(GetPlayerPed(-1), "reaction@male_stand@small_intro@forward", "react_forward_small_intro_a", 1.0, 2, -1, 49, 0, 0, 0, 0)
-
-					Citizen.Wait(2500)
+					--loadAnimDict("reaction@male_stand@small_intro@forward")
+					--TaskPlayAnim(GetPlayerPed(-1), "reaction@male_stand@small_intro@forward", "react_forward_small_intro_a", 1.0, 2, -1, 49, 0, 0, 0, 0)
+                    StopFuelVehicle()
+					Citizen.Wait(700)
 					ClearPedTasksImmediately(GetPlayerPed(-1))
 					FreezeEntityPosition(GetPlayerPed(-1), false)
 					FreezeEntityPosition(vehicle, false)
@@ -352,8 +395,8 @@ Citizen.CreateThread(function()
 					end
 				end
 			else
-				loadAnimDict("reaction@male_stand@small_intro@forward")
-				TaskPlayAnim(GetPlayerPed(-1), "reaction@male_stand@small_intro@forward", "react_forward_small_intro_a", 1.0, 2, -1, 49, 0, 0, 0, 0)
+				--loadAnimDict("reaction@male_stand@small_intro@forward")
+				--TaskPlayAnim(GetPlayerPed(-1), "reaction@male_stand@small_intro@forward", "react_forward_small_intro_a", 1.0, 2, -1, 49, 0, 0, 0, 0)
 
 				Citizen.Wait(2500)
 				ClearPedTasksImmediately(GetPlayerPed(-1))
@@ -671,3 +714,9 @@ Citizen.CreateThread(function()
 		end
 	end
 end)
+
+function NotificationMessage(message)
+	SetNotificationTextEntry("STRING")
+	AddTextComponentString(message)
+	DrawNotification(0,1)
+end
