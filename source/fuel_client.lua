@@ -173,6 +173,7 @@ end
 AddEventHandler('fuel:refuelFromPump', function(pumpObject, ped, vehicle)
 	TaskTurnPedToFaceEntity(ped, vehicle, 1000)
 	Citizen.Wait(1000)
+	SetCurrentPedWeapon(ped, -1569615261, true)
 	LoadAnimDict("timetable@gardener@filling_can")
 	TaskPlayAnim(ped, "timetable@gardener@filling_can", "gar_ig_5_filling_can", 2.0, 8.0, -1, 50, 0, 0, 0, 0)
 
