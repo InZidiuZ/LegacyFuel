@@ -344,7 +344,7 @@ function SetFuel(vehicle, fuel)
 	end
 end
 
-if Conifg.EnableHUD then
+if Config.EnableHUD then
 	local function DrawAdvancedText(x,y ,w,h,sc, text, r,g,b,a,font,jus)
 		SetTextFont(font)
 		SetTextProportional(0)
