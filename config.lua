@@ -12,6 +12,9 @@ Config.FuelDecor = "_FUEL_LEVEL"
 -- What keys are disabled while you're fueling.
 Config.DisableKeys = {0, 22, 23, 24, 29, 30, 31, 37, 44, 56, 82, 140, 166, 167, 168, 170, 288, 289, 311, 323}
 
+-- Want to use the HUD? Turn this to true.
+Config.EnableHUD = false
+
 -- Configure the strings as you wish here.
 Config.Strings = {
 	ExitVehicle = "Exit the vehicle to refuel",
