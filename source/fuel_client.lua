@@ -297,32 +297,40 @@ function CreateBlip(coords)
 	return blip
 end
 
-Citizen.CreateThread(function()
-	local currentGasBlip = 0
+if Config.ShowNearestGasStationOnly then
+	Citizen.CreateThread(function()
+		local currentGasBlip = 0
 
-	while true do
-		Citizen.Wait(10000)
+		while true do
+			Citizen.Wait(10000)
 
-		local coords = GetEntityCoords(PlayerPedId())
-		local closest = 1000
-		local closestCoords
+			local coords = GetEntityCoords(PlayerPedId())
+			local closest = 1000
+			local closestCoords
 
-		for k,v in pairs(Config.GasStations) do
-			local dstcheck = GetDistanceBetweenCoords(coords, v)
+			for k,v in pairs(Config.GasStations) do
+				local dstcheck = GetDistanceBetweenCoords(coords, v)
 
-			if dstcheck < closest then
-				closest = dstcheck
-				closestCoords = v
+				if dstcheck < closest then
+					closest = dstcheck
+					closestCoords = v
+				end
 			end
-		end
 
-		if DoesBlipExist(currentGasBlip) then
-			RemoveBlip(currentGasBlip)
-		end
+			if DoesBlipExist(currentGasBlip) then
+				RemoveBlip(currentGasBlip)
+			end
 
-		currentGasBlip = CreateBlip(closestCoords)
-	end
-end)
+			currentGasBlip = CreateBlip(closestCoords)
+		end
+	end)
+elseif Config.ShowAllGasStations then
+	Citizen.CreateThread(function()
+		for k,v in pairs(Config.GasStations) do
+			CreateBlip(v)
+		end
+	end)
+end
 
 function GetFuel(vehicle)
 	return DecorGetFloat(vehicle, Config.FuelDecor)
