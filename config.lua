@@ -30,7 +30,7 @@ Config.Strings = {
 	CancelFuelingJerryCan = "Press ~g~E ~w~to cancel the fueling"
 }
 
-if not UseESX then
+if not Config.UseESX then
 	Config.Strings.PurchaseJerryCan = "Press ~g~E ~w~to grab a jerry can"
 	Config.Strings.NotEnoughCash = "Nout enough cash"
 end
