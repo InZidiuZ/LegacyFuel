@@ -32,7 +32,7 @@ Config.Strings = {
 
 if not UseESX then
 	Config.Strings.PurchaseJerryCan = "Press ~g~E ~w~to grab a jerry can"
-	Config.Strings.NotEnoughCash = "Nout enough cash"
+	Config.Strings.NotEnoughCash = "Not enough cash"
 end
 
 Config.PumpModels = {
