@@ -14,16 +14,19 @@ local isFueling = false
 local currentFuel = 0.0
 local currentCost = 0.0
 local currentCash = 1000
+local fuelSynced = false
 
 function ManageFuelUsage(vehicle)
 	if not DecorExistOn(vehicle, Config.FuelDecor) then
-		SetVehicleFuelLevel(vehicle, math.random(200, 800) / 10.0)
-		DecorSetFloat(vehicle, Config.FuelDecor, GetVehicleFuelLevel(vehicle))
+		SetFuel(vehicle, math.random(200, 800) / 10)
+	elseif not fuelSynced then
+		SetFuel(vehicle, GetFuel(vehicle))
+
+		fuelSynced = true
 	end
 
 	if IsVehicleEngineOn(vehicle) then
-		SetVehicleFuelLevel(vehicle, GetVehicleFuelLevel(vehicle) - Config.FuelUsage[Round(GetVehicleCurrentRpm(vehicle), 1)] * (Config.Classes[GetVehicleClass(vehicle)] or 1.0) / 10)
-		DecorSetFloat(vehicle, Config.FuelDecor, GetVehicleFuelLevel(vehicle))
+		SetFuel(vehicle, GetVehicleFuelLevel(vehicle) - Config.FuelUsage[Round(GetVehicleCurrentRpm(vehicle), 1)] * (Config.Classes[GetVehicleClass(vehicle)] or 1.0) / 10)
 	end
 end
 
@@ -41,6 +44,8 @@ Citizen.CreateThread(function()
 			if GetPedInVehicleSeat(vehicle, -1) == ped then
 				ManageFuelUsage(vehicle)
 			end
+		else
+			fuelSynced = false
 		end
 	end
 end)
@@ -150,8 +155,7 @@ AddEventHandler('fuel:startFuelUpTick', function(pumpObject, ped, vehicle)
 		currentCost = currentCost + extraCost
 
 		if currentCash >= currentCost then
-			SetVehicleFuelLevel(vehicle, currentFuel)
-			DecorSetFloat(vehicle, Config.FuelDecor, GetVehicleFuelLevel(vehicle))
+			SetFuel(vehicle, currentFuel)
 		else
 			isFueling = false
 		end
