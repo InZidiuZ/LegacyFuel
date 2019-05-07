@@ -382,8 +382,8 @@ if Config.EnableHUD then
 				local vehicle = GetVehiclePedIsIn(ped)
 				local speed = GetEntitySpeed(vehicle)
 
-				mph = tostring(math.ceil(speed * 3.6))
-				kmh = tostring(math.ceil(speed * 2.236936))
+				mph = tostring(math.ceil(speed * 2.236936))
+				kmh = tostring(math.ceil(speed * 3.6))
 				fuel = tostring(math.ceil(GetVehicleFuelLevel(vehicle)))
 
 				displayHud = true
