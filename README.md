@@ -3,7 +3,7 @@ Started off as my first script, and for whatever reason, I decided to release th
 
 ### Installation
 1) Download the latest version in the "code" tab on GitHub.
-2) Drag & drop the folder in your `resources` server folder.
+2) Drag & drop the folder into your `resources` server folder.
 3) Configure the config file to your liking.
 4) Add `start LegacyFuel` to your server config.
 
