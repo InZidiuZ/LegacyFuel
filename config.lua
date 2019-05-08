@@ -27,12 +27,12 @@ Config.Strings = {
 	FullTank = "Tank is full",
 	PurchaseJerryCan = "Press ~g~E ~w~to purchase a jerry can for ~g~$" .. Config.JerryCanCost,
 	CancelFuelingPump = "Press ~g~E ~w~to cancel the fueling",
-	CancelFuelingJerryCan = "Press ~g~E ~w~to cancel the fueling"
+	CancelFuelingJerryCan = "Press ~g~E ~w~to cancel the fueling",
+	NotEnoughCash = "Not enough cash"
 }
 
 if not Config.UseESX then
 	Config.Strings.PurchaseJerryCan = "Press ~g~E ~w~to grab a jerry can"
-	Config.Strings.NotEnoughCash = "Not enough cash"
 end
 
 Config.PumpModels = {

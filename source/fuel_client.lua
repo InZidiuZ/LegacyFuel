@@ -269,12 +269,16 @@ Citizen.CreateThread(function()
 				elseif isNearPump then
 					local stringCoords = GetEntityCoords(isNearPump)
 
-					DrawText3Ds(stringCoords.x, stringCoords.y, stringCoords.z + 1.2, Config.Strings.PurchaseJerryCan)
+					if currentCash > 100 then
+						DrawText3Ds(stringCoords.x, stringCoords.y, stringCoords.z + 1.2, Config.Strings.PurchaseJerryCan)
 
-					if IsControlJustReleased(0, 38) then
-						GiveWeaponToPed(ped, 883325847, 4500, false, true)
+						if IsControlJustReleased(0, 38) then
+							GiveWeaponToPed(ped, 883325847, 4500, false, true)
 
-						TriggerServerEvent('fuel:pay', Config.JerryCanCost)
+							TriggerServerEvent('fuel:pay', Config.JerryCanCost)
+						end
+					else
+						DrawText3Ds(stringCoords.x, stringCoords.y, stringCoords.z + 1.2, Config.Strings.NotEnoughCash)
 					end
 				else
 					Citizen.Wait(250)
