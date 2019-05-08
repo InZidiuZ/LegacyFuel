@@ -306,7 +306,31 @@ Citizen.CreateThread(function()
 								currentCash = ESX.GetPlayerData().money
 							end
 						else
-							DrawText3Ds(stringCoords.x, stringCoords.y, stringCoords.z + 1.2, Config.Strings.AlreadyHasJerryCan)
+							if Config.UseESX then
+								local refillCost = Round(Config.RefillCost * (1 - GetAmmoInPedWeapon(ped, 883325847) / 4500))
+
+								if refillCost > 0 then
+									if currentCash >= refillCost then
+										DrawText3Ds(stringCoords.x, stringCoords.y, stringCoords.z + 1.2, Config.Strings.RefillJerryCan .. refillCost)
+
+										if IsControlJustReleased(0, 38) then
+											TriggerServerEvent('fuel:pay', refillCost)
+
+											SetPedAmmo(ped, 883325847, 4500)
+										end
+									else
+										DrawText3Ds(stringCoords.x, stringCoords.y, stringCoords.z + 1.2, Config.Strings.NotEnoughCashJerryCan)
+									end
+								else
+									DrawText3Ds(stringCoords.x, stringCoords.y, stringCoords.z + 1.2, Config.Strings.JerryCanFull)
+								end
+							else
+								DrawText3Ds(stringCoords.x, stringCoords.y, stringCoords.z + 1.2, Config.Strings.RefillJerryCan)
+
+								if IsControlJustReleased(0, 38) then
+									SetPedAmmo(ped, 883325847, 4500)
+								end
+							end
 						end
 					else
 						DrawText3Ds(stringCoords.x, stringCoords.y, stringCoords.z + 1.2, Config.Strings.NotEnoughCash)
