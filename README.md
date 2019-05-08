@@ -8,7 +8,7 @@ Started off as my first script, and for whatever reason, I decided to release th
 4) Add `start LegacyFuel` to your server config.
 
 ### Exports
-There are currently two exports available, which should help you control the fuel level for vehicles whenever needed.
+There are currently two (client-sided) exports available, which should help you control the fuel level for vehicles whenever needed.
 
 ```
 SetFuel(--[[Vehicle--]] vehicle, --[[Int--]] value)
