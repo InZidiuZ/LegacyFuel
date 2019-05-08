@@ -13,7 +13,7 @@ Config.FuelDecor = "_FUEL_LEVEL"
 Config.DisableKeys = {0, 22, 23, 24, 29, 30, 31, 37, 44, 56, 82, 140, 166, 167, 168, 170, 288, 289, 311, 323}
 
 -- Want to use the HUD? Turn this to true.
-Config.EnableHUD = false
+Config.EnableHUD = true
 
 -- Configure blips here. Turn both to false to disable blips all together.
 Config.ShowNearestGasStationOnly = true
@@ -44,6 +44,15 @@ Config.PumpModels = {
 	[-469694731] = true,
 	[-164877493] = true
 }
+
+-- Blacklist certain vehicles. Use names or hashes. https://wiki.gtanet.work/index.php?title=Vehicle_Models
+Config.Blacklist = {
+	"Adder",
+	276773164
+}
+
+-- Do you want the HUD removed from showing in blacklisted vehicles?
+Config.RemoveHUDForBlacklistedVehicle = true
 
 -- Class multipliers. If you want SUVs to use less fuel, you can change it to anything under 1.0, and vise versa.
 Config.Classes = {

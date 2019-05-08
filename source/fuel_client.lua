@@ -15,6 +15,7 @@ local currentFuel = 0.0
 local currentCost = 0.0
 local currentCash = 1000
 local fuelSynced = false
+local inBlacklisted = false
 
 function ManageFuelUsage(vehicle)
 	if not DecorExistOn(vehicle, Config.FuelDecor) then
@@ -33,6 +34,18 @@ end
 Citizen.CreateThread(function()
 	DecorRegister(Config.FuelDecor, 1)
 
+	for i = 1, #Config.Blacklist do
+		if type(Config.Blacklist[i]) == 'string' then
+			Config.Blacklist[GetHashKey(Config.Blacklist[i])] = true
+		else
+			Config.Blacklist[Config.Blacklist[i]] = true
+		end
+	end
+
+	for i = #Config.Blacklist, 1, -1 do
+		table.remove(Config.Blacklist, i)
+	end
+
 	while true do
 		Citizen.Wait(1000)
 
@@ -41,11 +54,23 @@ Citizen.CreateThread(function()
 		if IsPedInAnyVehicle(ped) then
 			local vehicle = GetVehiclePedIsIn(ped)
 
-			if GetPedInVehicleSeat(vehicle, -1) == ped then
+			if Config.Blacklist[GetEntityModel(vehicle)] then
+				inBlacklisted = true
+			else
+				inBlacklisted = false
+			end
+
+			if not inBlacklisted and GetPedInVehicleSeat(vehicle, -1) == ped then
 				ManageFuelUsage(vehicle)
 			end
 		else
-			fuelSynced = false
+			if fuelSynced then
+				fuelSynced = false
+			end
+
+			if inBlacklisted then
+				inBlacklisted = false
+			end
 		end
 	end
 end)
@@ -269,7 +294,7 @@ Citizen.CreateThread(function()
 				elseif isNearPump then
 					local stringCoords = GetEntityCoords(isNearPump)
 
-					if currentCash > 100 then
+					if currentCash > Config.JerryCanCost then
 						DrawText3Ds(stringCoords.x, stringCoords.y, stringCoords.z + 1.2, Config.Strings.PurchaseJerryCan)
 
 						if IsControlJustReleased(0, 38) then
@@ -382,7 +407,7 @@ if Config.EnableHUD then
 
 			local ped = PlayerPedId()
 
-			if IsPedInAnyVehicle(ped) then
+			if IsPedInAnyVehicle(ped) and not (Config.RemoveHUDForBlacklistedVehicle and inBlacklisted) then
 				local vehicle = GetVehiclePedIsIn(ped)
 				local speed = GetEntitySpeed(vehicle)
 
