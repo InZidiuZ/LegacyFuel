@@ -11,7 +11,7 @@ Started off as my first script, and for whatever reason, I decided to release th
 There are currently two (client-sided) exports available, which should help you control the fuel level for vehicles whenever needed.
 
 ```
-SetFuel(--[[Vehicle--]] vehicle, --[[Int--]] value)
+SetFuel(--[[Vehicle--]] vehicle, --[[Float--]] value)
 GetFuel(--[[Vehicle--]] vehicle) -- Returns the vehicle's fuel level.
 ```
 
