@@ -1,5 +1,5 @@
 ### About
-Started off as my first script, and for whatever reason, I decided to release the disguisting pile of shit. Felt bad after some time for leaving so many people with this horror of a script, so ended up spending a few hours rewriting it, so here you go. (:
+Started off as my first script, and for whatever reason, I decided to release the disgusting pile of shit. Felt bad after some time for leaving so many people with this horror of a script, so ended up spending a few hours rewriting it, so here you go. (:
 
 ### Installation
 1) Download the latest version in the "code" tab on GitHub.
