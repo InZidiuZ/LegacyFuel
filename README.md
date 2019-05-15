@@ -27,6 +27,6 @@ function StoreVehicleInGarage(vehicle)
     local plate = GetVehicleNumberPlateText(vehicle)
     local fuelLevel = exports["LegacyFuel"]:GetFuel(vehicle)
 
-    TriggerServerEvent('vehiclesStored', plate, fuel)
+    TriggerServerEvent('vehiclesStored', plate, fuelLevel)
 end
 ```
