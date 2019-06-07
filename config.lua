@@ -32,7 +32,8 @@ Config.Strings = {
 	NotEnoughCash = "Not enough cash",
 	RefillJerryCan = "Press ~g~E ~w~ to refill the jerry can for ",
 	NotEnoughCashJerryCan = "Not enough cash to refill jerry can",
-	JerryCanFull = "Jerry can is full"
+	JerryCanFull = "Jerry can is full",
+	TotalCost = "Costs: ~g~$"
 }
 
 if not Config.UseESX then
