@@ -222,7 +222,7 @@ AddEventHandler('fuel:refuelFromPump', function(pumpObject, ped, vehicle)
 			local extraString = ""
 
 			if Config.UseESX then
-				extraString = "\nCost: ~g~$" .. Round(currentCost, 1)
+				extraString = "\n" .. Config.Strings.TotalCost .. ": ~g~$" .. Round(currentCost, 1)
 			end
 
 			DrawText3Ds(stringCoords.x, stringCoords.y, stringCoords.z + 1.2, Config.Strings.CancelFuelingPump .. extraString)
