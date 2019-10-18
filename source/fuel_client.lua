@@ -1,10 +1,9 @@
 if Config.UseESX then
-	ESX = nil
-
 	Citizen.CreateThread(function()
 		while not ESX do
 			TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-			Citizen.Wait(100)
+
+			Citizen.Wait(500)
 		end
 	end)
 end
