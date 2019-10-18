@@ -7,6 +7,7 @@ server_scripts {
 
 client_scripts {
 	'config.lua',
+	'functions/functions_client.lua',
 	'source/fuel_client.lua'
 }
 
