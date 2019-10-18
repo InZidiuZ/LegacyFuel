@@ -20,6 +20,9 @@ Config.EnableHUD = true
 Config.ShowNearestGasStationOnly = true
 Config.ShowAllGasStations = false
 
+-- Modify the fuel-cost here, using a multiplier value. Setting the value to 2.0 would cause a doubled increase.
+Config.CostMultiplier = 1.0
+
 -- Configure the strings as you wish here.
 Config.Strings = {
 	ExitVehicle = "Exit the vehicle to refuel",
