@@ -128,16 +128,17 @@ end)
 
 function DrawText3Ds(x, y, z, text)
 	local onScreen,_x,_y=World3dToScreen2d(x,y,z)
-	local px,py,pz=table.unpack(GetGameplayCamCoords())
 
-	SetTextScale(0.35, 0.35)
-	SetTextFont(4)
-	SetTextProportional(1)
-	SetTextColour(255, 255, 255, 215)
-	SetTextEntry("STRING")
-	SetTextCentre(1)
-	AddTextComponentString(text)
-	DrawText(_x,_y)
+	if onScreen then
+		SetTextScale(0.35, 0.35)
+		SetTextFont(4)
+		SetTextProportional(1)
+		SetTextColour(255, 255, 255, 215)
+		SetTextEntry("STRING")
+		SetTextCentre(1)
+		AddTextComponentString(text)
+		DrawText(_x,_y)
+	end
 end
 
 function LoadAnimDict(dict)
@@ -372,12 +373,12 @@ if Config.ShowNearestGasStationOnly then
 			local closest = 1000
 			local closestCoords
 
-			for k,v in pairs(Config.GasStations) do
-				local dstcheck = GetDistanceBetweenCoords(coords, v)
+			for _, gasStationCoords in pairs(Config.GasStations) do
+				local dstcheck = GetDistanceBetweenCoords(coords, gasStationCoords)
 
 				if dstcheck < closest then
 					closest = dstcheck
-					closestCoords = v
+					closestCoords = gasStationCoords
 				end
 			end
 
@@ -390,8 +391,8 @@ if Config.ShowNearestGasStationOnly then
 	end)
 elseif Config.ShowAllGasStations then
 	Citizen.CreateThread(function()
-		for k,v in pairs(Config.GasStations) do
-			CreateBlip(v)
+		for _, gasStationCoords in pairs(Config.GasStations) do
+			CreateBlip(gasStationCoords)
 		end
 	end)
 end
