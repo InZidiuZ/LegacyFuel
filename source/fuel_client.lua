@@ -84,7 +84,13 @@ Citizen.CreateThread(function()
 			isNearPump = pumpObject
 
 			if Config.UseESX then
-				currentCash = ESX.GetPlayerData().money
+				local playerData = ESX.GetPlayerData()
+				for i=1, #playerData.accounts, 1 do
+					if playerData.accounts[i].name == 'money' then
+						currentCash = playerData.accounts[i].money
+						break
+					end
+				end
 			end
 		else
 			isNearPump = false
