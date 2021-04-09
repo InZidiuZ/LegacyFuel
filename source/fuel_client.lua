@@ -201,7 +201,7 @@ Citizen.CreateThread(function()
 				local vehicle = GetPlayersLastVehicle()
 				local vehicleCoords = GetEntityCoords(vehicle)
 
-				if DoesEntityExist(vehicle) and GetDistanceBetweenCoords(GetEntityCoords(ped), vehicleCoords) < 2.5 then
+				if DoesEntityExist(vehicle) and #(GetEntityCoords(ped) - vehicleCoords) < 2.5 then
 					if not DoesEntityExist(GetPedInVehicleSeat(vehicle, -1)) then
 						local stringCoords = GetEntityCoords(isNearPump)
 						local canFuel = true
@@ -299,7 +299,7 @@ if Config.ShowNearestGasStationOnly then
 			local closestCoords
 
 			for _, gasStationCoords in pairs(Config.GasStations) do
-				local dstcheck = GetDistanceBetweenCoords(coords, gasStationCoords)
+				local dstcheck = #(coords - gasStationCoords)
 
 				if dstcheck < closest then
 					closest = dstcheck

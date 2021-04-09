@@ -76,7 +76,7 @@ function FindNearestFuelPump()
 	local pumpDistance = 1000
 
 	for _, fuelPumpObject in pairs(fuelPumps) do
-		local dstcheck = GetDistanceBetweenCoords(coords, GetEntityCoords(fuelPumpObject))
+		local dstcheck = #(coords - GetEntityCoords(fuelPumpObject))
 
 		if dstcheck < pumpDistance then
 			pumpDistance = dstcheck
