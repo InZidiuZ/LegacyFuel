@@ -1,8 +1,5 @@
 Config = {}
 
--- Are you using ESX? Turn this to true if you would like fuel & jerry cans to cost something.
-Config.UseESX = true
-
 -- What should the price of jerry cans be?
 Config.JerryCanCost = 100
 Config.RefillCost = 50 -- If it is missing half of it capacity, this amount will be divided in half, and so on.
@@ -37,12 +34,9 @@ Config.Strings = {
 	NotEnoughCashJerryCan = "Not enough cash to refill jerry can",
 	JerryCanFull = "Jerry can is full",
 	TotalCost = "Cost",
+	PurchaseJerryCan = "Press ~g~E ~w~to grab a jerry can",
+	RefillJerryCan = "Press ~g~E ~w~ to refill the jerry can",
 }
-
-if not Config.UseESX then
-	Config.Strings.PurchaseJerryCan = "Press ~g~E ~w~to grab a jerry can"
-	Config.Strings.RefillJerryCan = "Press ~g~E ~w~ to refill the jerry can"
-end
 
 Config.PumpModels = {
 	[-2007231801] = true,
