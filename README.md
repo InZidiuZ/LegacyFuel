@@ -1,5 +1,4 @@
 ### About
-![alt text](http://url/to/img.png)
 My Forked version of LegacyFuel all rights belong to the owner.
 this is my version and its NUI based
 Future WIP: Target Based
