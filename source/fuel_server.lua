@@ -1,8 +1,9 @@
 QBCore = nil
+
 TriggerEvent('QBCore:GetObject', function(obj) QBCore = obj end)
 
 RegisterServerEvent('fuel:pay')
-AddEventHandler('fuel:pay', function(price)
+AddEventHandler('fuel:pay', function(price, source)
 	local xPlayer = QBCore.Functions.GetPlayer(source)
 	local amount = math.floor(price + 0.5)
 

@@ -3,7 +3,7 @@ QBCore = nil
 Citizen.CreateThread(function() 
     while QBCore == nil do
         TriggerEvent("QBCore:GetObject", function(obj) QBCore = obj end)    
-        Citizen.Wait(2000)
+        Citizen.Wait(200)
     end
 end)
 
@@ -127,7 +127,7 @@ AddEventHandler('fuel:startFuelUpTick', function(pumpObject, ped, vehicle)
 	end
 
 	if pumpObject then
-		TriggerServerEvent('fuel:pay', currentCost)
+		TriggerServerEvent('fuel:pay', currentCost, GetPlayerServerId(PlayerId()))
 	end
 
 	currentCost = 0.0
@@ -229,7 +229,7 @@ Citizen.CreateThread(function()
 							if IsControlJustReleased(0, 38) then
 								TriggerServerEvent('QBCore:Server:AddItem', "weapon_petrolcan", 1)
 								TriggerEvent("inventory:client:ItemBox", QBCore.Shared.Items["weapon_petrolcan"], "add")
-								TriggerServerEvent('fuel:pay', Config.JerryCanCost)
+								TriggerServerEvent('fuel:pay', Config.JerryCanCost, GetPlayerServerId(PlayerId()))
 							end
 						else
 							local refillCost = Round(Config.RefillCost * (1 - GetAmmoInPedWeapon(ped, 883325847) / 4500))
@@ -239,7 +239,7 @@ Citizen.CreateThread(function()
 									DrawText3Ds(stringCoords.x, stringCoords.y, stringCoords.z + 1.2, Config.Strings.RefillJerryCan .. refillCost)
 
 									if IsControlJustReleased(0, 38) then
-										TriggerServerEvent('fuel:pay', refillCost)
+										TriggerServerEvent('fuel:pay', refillCost, GetPlayerServerId(PlayerId()))
 
 										SetPedAmmo(ped, 883325847, 4500)
 									end
