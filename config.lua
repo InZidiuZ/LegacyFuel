@@ -8,7 +8,7 @@ Config.stock = {
 	['default_price'] = 7.00,
 	['default_stock'] = 9999
 }
-Config.Managefuel = true -- enable disable managefuel, disable if you only want gas station function
+Config.Managefuel = false -- enable disable managefuel, disable if you only want gas station function
 Config.FuelDecor = "_FUEL_LEVEL"
 
 Config.DisableKeys = { 0,22,23,24,29,30,31,37,44,56,82,140,166,167,168,170,288,289,311,323 }

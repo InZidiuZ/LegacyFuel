@@ -21,6 +21,11 @@ function open(vehicle,data)
 	SendNUIMessage({ action = true, fuel = GetVehicleFuelLevel(vehicle), data = data })
 end
 
+RegisterNetEvent('renzu_fuel:open')
+AddEventHandler('renzu_fuel:open',function(vehicle,data)
+	open(vehicle,data)
+end)
+
 AddEventHandler('onResourceStart', function(name)
     if GetCurrentResourceName() ~= name then return end
     close()
@@ -63,22 +68,17 @@ function FindNearestFuelPump()
 	local fuelPumps = {}
 	local handle,object = FindFirstObject()
 	local success
-
-	repeat
-		if Config.PumpModels[GetEntityModel(object)] then
-			table.insert(fuelPumps,object)
+	for k,v in pairs(GetGamePool('CObject')) do
+		if Config.PumpModels[GetEntityModel(v)] then
+			table.insert(fuelPumps,v)
 		end
-
-		success,object = FindNextObject(handle,object)
-	until not success
-
-	EndFindObject(handle)
+	end
 
 	local pumpObject = 0
 	local pumpDistance = 1000
 
 	for k,v in pairs(fuelPumps) do
-		local dstcheck = GetDistanceBetweenCoords(coords,GetEntityCoords(v))
+		local dstcheck = #(coords - GetEntityCoords(v))
 
 		if dstcheck < pumpDistance then
 			pumpDistance = dstcheck
@@ -87,25 +87,6 @@ function FindNearestFuelPump()
 	end
 	return pumpObject,pumpDistance
 end
-
-Citizen.CreateThread(function()
-	while true do
-		Citizen.Wait(2000)
-		local pumpObject,pumpDistance = FindNearestFuelPump()
-		if pumpDistance < 2.0 then
-			pumpLocation = nil
-			for k,v in pairs(Config.GasStation) do
-				if GetDistanceBetweenCoords(vector3(v[1],v[2],v[3]),GetEntityCoords(pumpObject)) <= v[4] then
-					pumpLocation = k
-				end
-			end
-			isNearPump = pumpObject
-		else
-			isNearPump = false
-			Citizen.Wait(math.ceil(pumpDistance*20))
-		end
-	end
-end)
 
 RegisterNetEvent("renzu_fuel:syncfuel")
 AddEventHandler("renzu_fuel:syncfuel",function(index,change,FuelDecor)
@@ -151,11 +132,12 @@ end)
 
 RegisterNetEvent('renzu_fuel:refuelFromPump')
 AddEventHandler('renzu_fuel:refuelFromPump',function(pumpObject,ped,vehicle)
+	print(pumpObject,ped,vehicle)
 	currentFuel = GetVehicleFuelLevel(vehicle)
 	TaskTurnPedToFaceEntity(ped,vehicle,5000)
 	LoadAnimDict("timetable@gardener@filling_can")
 	TaskPlayAnim(ped,"timetable@gardener@filling_can","gar_ig_5_filling_can",2.0,8.0,-1,50,0,0,0,0)
-
+	isFueling = true
 	while isFueling do
 		Citizen.Wait(4)
         local oldFuel = DecorGetFloat(vehicle,Config.FuelDecor)
@@ -198,6 +180,89 @@ AddEventHandler('renzu_fuel:refuelFromPump',function(pumpObject,ped,vehicle)
 	RemoveAnimDict("timetable@gardener@filling_can")
 end)
 
+RegisterNetEvent('renzu_fuel:fuelevent')
+AddEventHandler('renzu_fuel:fuelevent',function(pumpObject,ped,vehicle)
+	local vehicle = GetPlayersLastVehicle()
+	local vehicleCoords = GetEntityCoords(vehicle)
+	local ped = PlayerPedId()
+	if DoesEntityExist(vehicle) and GetDistanceBetweenCoords(GetEntityCoords(ped),vehicleCoords) < 3.5 then
+		if isNearPump then
+			open(vehicle,output)
+			isFueling = true
+			paid = false
+		else
+			isFueling = true
+			TriggerEvent('renzu_fuel:refuelFromPump',isNearPump,ped,vehicle)
+		end
+	end
+end)
+
+function PopUI(name,v,reqdist,event,arg,server)
+    if reqdist == nil then reqdist = 5 end
+    local table = {
+        ['event'] = event,
+        ['title'] = name,
+        ['server_event'] = server,
+        ['unpack_arg'] = true,
+        ['invehicle_title'] = 'Get out to vehicle',
+        ['confirm'] = '[ENTER]',
+		['fa'] = '<i class="fad fa-gas-pump"></i>',
+        ['reject'] = '[CLOSE]',
+        ['custom_arg'] = arg, -- example: {1,2,3,4}
+        ['use_cursor'] = false, -- USE MOUSE CURSOR INSTEAD OF INPUT (ENTER)
+    }
+    TriggerEvent('renzu_popui:showui',table)
+    local dist = #(v - GetEntityCoords(PlayerPedId()))
+    while dist < reqdist and isNearPump do
+        dist = #(v - GetEntityCoords(PlayerPedId()))
+        Wait(100)
+    end
+    TriggerEvent('renzu_popui:closeui')
+end
+
+function DrawtextUI(name,v,reqdist,event,arg,server,invehicle,key)
+    if reqdist == nil then reqdist = 5 end
+    local table = {
+		['key'] = key or 'backspace',
+        ['event'] = event,
+        ['title'] = name,
+		['invehicle_title'] = name,
+        ['server_event'] = server,
+        ['unpack_arg'] = true,
+		['fa'] = '<i class="fad fa-gas-pump"></i>',
+        ['custom_arg'] = arg, -- example: {1,2,3,4}
+    }
+    TriggerEvent('renzu_popui:drawtextuiwithinput',table)
+    local dist = #(v - GetEntityCoords(PlayerPedId()))
+    while dist < reqdist and isNearPump and not IsPedInAnyVehicle(PlayerPedId()) do
+        dist = #(v - GetEntityCoords(PlayerPedId()))
+        Wait(100)
+    end
+	if invehicle then
+		while dist < reqdist and isNearPump and IsPedInAnyVehicle(PlayerPedId()) do
+			dist = #(v - GetEntityCoords(PlayerPedId()))
+			Wait(100)
+		end
+	end
+    TriggerEvent('renzu_popui:closeui')
+end
+
+Citizen.CreateThread(function()
+	while true do
+		Citizen.Wait(2000)
+		local ped = PlayerPedId()
+		local sleep = 2000
+		local pumpObject,pumpDistance = FindNearestFuelPump()
+		if pumpDistance < 2.0 then
+			isNearPump = pumpObject
+		else
+			isNearPump = false
+			Citizen.Wait(math.ceil(pumpDistance*5))
+		end
+		Citizen.Wait(2000)
+	end
+end)
+
 Citizen.CreateThread(function()
 	while true do
 		Citizen.Wait(2000)
@@ -205,11 +270,11 @@ Citizen.CreateThread(function()
 		local sleep = 2000
 		while not isFueling and ((isNearPump and GetEntityHealth(isNearPump) > 0) or (GetSelectedPedWeapon(ped) == 883325847 and not isNearPump)) do
 			if isNearPump then
-				sleep = 1
+				sleep = 1000
 			end
 			if IsPedInAnyVehicle(ped) and GetPedInVehicleSeat(GetVehiclePedIsIn(ped),-1) == ped then
 				local pumpCoords = GetEntityCoords(isNearPump)
-				DrawText3Ds(pumpCoords.x,pumpCoords.y,pumpCoords.z + 1.2,"GET OUT OF ~y~VEHICLE ~w~TO FUEL")
+				DrawtextUI("Get Out of Vehicle",pumpCoords,3.5,'dummyevent',{},false,true)
 			else
 				local vehicle = GetPlayersLastVehicle()
 				local vehicleCoords = GetEntityCoords(vehicle)
@@ -224,30 +289,18 @@ Citizen.CreateThread(function()
 							end
 						end
 
-						if GetVehicleFuelLevel(vehicle) < 99 and canFuel then
-							DrawText3Ds(stringCoords.x,stringCoords.y,stringCoords.z + 1.2,"Press ~g~E ~w~to fuel")
-							if IsControlJustReleased(0,38) then
-								if isNearPump then
-									open(vehicle,output)
-									isFueling = true
-									paid = false
-								else
-									isFueling = true
-									TriggerEvent('renzu_fuel:refuelFromPump',isNearPump,ped,vehicle)
-								end
-							end
+						if GetVehicleFuelLevel(vehicle) < 99 and canFuel and isNearPump then
+							PopUI("Re Fuel Vehicle",stringCoords,3.5,'renzu_fuel:open',{vehicle,output},false)
 						elseif not canFuel then
-							DrawText3Ds(stringCoords.x,stringCoords.y,stringCoords.z + 1.2,"~o~Cant Refuel")
+							DrawtextUI("Cant Fuel",stringCoords,3.5,'dummyevent',{},false,false)
 						else
-							DrawText3Ds(stringCoords.x,stringCoords.y,stringCoords.z + 1.2,"~g~FULL TANK")
+							DrawtextUI("FULL TANK",stringCoords,3.5,'dummyevent',{},false,false)
 						end
 					end
 				elseif isNearPump then
 					local stringCoords = GetEntityCoords(isNearPump)
-					DrawText3Ds(stringCoords.x,stringCoords.y,stringCoords.z + 1.2,"Press ~g~E ~w~to Buy Jerrycan")
-					if IsControlJustReleased(0,38) then
-						TriggerServerEvent('renzu_fuel:payfuel',10000,true)
-					end
+					DrawtextUI("Press [E] to Buy Jerry Can",stringCoords,3.5,'renzu_fuel:payfuel',{10000,true},true,false,'E')
+					--PopUI("Buy Jerry Can",stringCoords,3.5,'renzu_fuel:payfuel',{10000,true},true)
 				end
 			end
 			Citizen.Wait(sleep)
