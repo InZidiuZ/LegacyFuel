@@ -5,15 +5,17 @@ author 'InZidiuZ'
 description 'Legacy Fuel'
 version '1.3'
 
--- What to run
+shared_scripts { 
+	'@qb-core/import.lua',
+	'config.lua'
+}
+
 client_scripts {
-	'config.lua',
 	'functions/functions_client.lua',
 	'source/fuel_client.lua'
 }
 
 server_scripts {
-	'config.lua',
 	'source/fuel_server.lua'
 }
 
