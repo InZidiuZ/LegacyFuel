@@ -1,7 +1,3 @@
-QBCore = nil
-
-TriggerEvent('QBCore:GetObject', function(obj) QBCore = obj end)
-
 RegisterServerEvent('fuel:pay')
 AddEventHandler('fuel:pay', function(price, source)
 	local xPlayer = QBCore.Functions.GetPlayer(source)
