@@ -44,6 +44,7 @@ $(document).ready(function(){
       $('body').fadeOut();  
     }
   });
+  function close() {}
   
   var counting;
   var completar;
@@ -135,6 +136,19 @@ $(document).ready(function(){
       }
     }
   });
+
+  $( "#close" ).click(function() {
+    $("#amount").val("")
+    counting;
+    inv;
+    price;
+    perc_new;
+    totalPercent;
+    guardar;
+    completar;
+    maxFuel;
+    $.post('http://renzu_fuel/escape', JSON.stringify({}));
+  })
 
   $( "#plus" ).click(function() {
     if (!counting) {
