@@ -1,8 +1,7 @@
 ### About
 My Forked version of LegacyFuel all rights belong to the owner.
 this is my version and its NUI based
-Future WIP: Target Based
-![alt text](https://i.imgur.com/3O0Xnx5.png)
+![image](https://user-images.githubusercontent.com/82306584/134341351-46b14e43-986a-4f26-9e7b-37eac8516f1e.png)
 
 ### Installation
 1) Download the latest version in the "code" tab on GitHub.
