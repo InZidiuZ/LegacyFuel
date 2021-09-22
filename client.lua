@@ -281,7 +281,6 @@ Citizen.CreateThread(function()
 					if not DoesEntityExist(GetPedInVehicleSeat(vehicle,-1)) then
 						local stringCoords = GetEntityCoords(isNearPump)
 						local canFuel = true
-						print(GetSelectedPedWeapon(ped),GetAmmoInPedWeapon(ped,883325847),GetVehicleFuelLevel(vehicle),canFuel,isNearPump)
 						if GetSelectedPedWeapon(ped) == 883325847 then
 							stringCoords = vehicleCoords
 							if GetAmmoInPedWeapon(ped,883325847) < 100 then
