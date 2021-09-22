@@ -15,7 +15,7 @@ AddEventHandler("renzu_fuel:payfuel",function(price,jeryycan,vehicle,fuel,fuel2,
 		if money >= price then
 			xPlayer.removeMoney(price)
 			if jeryycan then
-				TriggerClientEvent('renzu_fuel:jerrycan',source)
+				xPlayer.addWeapon('WEAPON_PETROLCAN',4500)
 			else
 				amount = math.floor(price/output.price)
 				fuel = math.floor(fuel/output.price)
