@@ -4,6 +4,8 @@ body {
     align-items: center;
     justify-content: center;
     display: none;
+    margin-top: -20%;
+    margin-left: 40%;
 }
 
 * {
@@ -18,7 +20,7 @@ body {
     height: 400px;
     padding-top: 8px;
     padding-left: 15px;
-    background-color: rgb(8 8 8 / 52%);
+    background-color: rgb(8 8 8 / 50%);
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
 }
@@ -211,7 +213,7 @@ left {
     text-align: center;
     flex-direction: column;
     text-transform: uppercase;
-    background-color: rgb(14 14 14 / 50%);
+    background-color: rgb(14 14 14 / 56%);
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
 }
@@ -248,8 +250,8 @@ left .act button {
   font-weight: 300;
   letter-spacing: 1px;
   background-color: transparent;
-  border-top: 1px solid rgba(29, 43, 44, 0.815);
-  border-bottom: 1px solid rgba(29, 43, 44, 0.815);
+  border-top: 1px solid rgb(240 240 241 / 22%);
+  border-bottom: 1px solid rgb(101 117 128 / 38%);
 }
 
 left .act button:hover {
