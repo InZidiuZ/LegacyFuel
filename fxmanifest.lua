@@ -14,6 +14,7 @@ client_scripts {
 	"client.lua"
 }
 
+dependency 'renzu_popui'
 files {
   'html/ui.html',
   'html/ui.css', 

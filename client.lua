@@ -132,7 +132,6 @@ end)
 
 RegisterNetEvent('renzu_fuel:refuelFromPump')
 AddEventHandler('renzu_fuel:refuelFromPump',function(pumpObject,ped,vehicle)
-	print(pumpObject,ped,vehicle)
 	currentFuel = GetVehicleFuelLevel(vehicle)
 	TaskTurnPedToFaceEntity(ped,vehicle,5000)
 	LoadAnimDict("timetable@gardener@filling_can")
@@ -253,7 +252,7 @@ Citizen.CreateThread(function()
 		local ped = PlayerPedId()
 		local sleep = 2000
 		local pumpObject,pumpDistance = FindNearestFuelPump()
-		if pumpDistance < 2.0 then
+		if pumpDistance < 3.0 then
 			isNearPump = pumpObject
 		else
 			isNearPump = false
@@ -290,7 +289,8 @@ Citizen.CreateThread(function()
 						end
 
 						if GetVehicleFuelLevel(vehicle) < 99 and canFuel and isNearPump then
-							PopUI("Re Fuel Vehicle",stringCoords,3.5,'renzu_fuel:open',{vehicle,output},false)
+							DrawtextUI("Press [E] to Re Fuel Vehicle",stringCoords,3.5,'renzu_fuel:open',{vehicle,output},false,false,'E')
+							--PopUI("Re Fuel Vehicle",stringCoords,3.5,'renzu_fuel:open',{vehicle,output},false)
 						elseif not canFuel then
 							DrawtextUI("Cant Fuel",stringCoords,3.5,'dummyevent',{},false,false)
 						else
