@@ -139,7 +139,7 @@ AddEventHandler('renzu_fuel:refuelFromPump',function(pumpObject,ped,vehicle)
 	isFueling = true
 	while isFueling do
 		Citizen.Wait(4)
-        local oldFuel = DecorGetFloat(vehicle,Config.FuelDecor)
+        local oldFuel = DecorGetFloat(vehicle,Config.FuelDecor)+0.0
 		local fuelToAdd = math.random(1,2) / 100.0
 
 		for k,v in pairs(Config.DisableKeys) do
@@ -151,7 +151,7 @@ AddEventHandler('renzu_fuel:refuelFromPump',function(pumpObject,ped,vehicle)
 			DrawText3Ds(vehicleCoords.x,vehicleCoords.y,vehicleCoords.z + 0.5,"PRESS ~g~E ~w~TO CANCEL")
 			DrawText3Ds(vehicleCoords.x,vehicleCoords.y,vehicleCoords.z + 0.34,"GALLON: ~b~"..Round(GetAmmoInPedWeapon(ped,883325847) / 4500 * 100,1).."%~w~    TANK: ~y~"..Round(currentFuel,1).."%")
 			if GetAmmoInPedWeapon(ped,883325847) - fuelToAdd * 100 >= 0 then
-				currentFuel = oldFuel + fuelToAdd
+				currentFuel = currentFuel + fuelToAdd
 				SetPedAmmo(ped,883325847,math.floor(GetAmmoInPedWeapon(ped,883325847) - fuelToAdd * 100))
 			else
 				isFueling = false
@@ -168,12 +168,12 @@ AddEventHandler('renzu_fuel:refuelFromPump',function(pumpObject,ped,vehicle)
 		end
 
 		SetVehicleFuelLevel(vehicle,currentFuel)
-		DecorSetFloat(vehicle,Config.FuelDecor,GetVehicleFuelLevel(vehicle))
 
 		if IsControlJustReleased(0,38) or DoesEntityExist(GetPedInVehicleSeat(vehicle,-1)) then
 			isFueling = false
 		end
 	end
+	DecorSetFloat(vehicle,Config.FuelDecor,GetVehicleFuelLevel(vehicle)+0.0)
 
 	ClearPedTasks(ped)
 	RemoveAnimDict("timetable@gardener@filling_can")
@@ -281,6 +281,7 @@ Citizen.CreateThread(function()
 					if not DoesEntityExist(GetPedInVehicleSeat(vehicle,-1)) then
 						local stringCoords = GetEntityCoords(isNearPump)
 						local canFuel = true
+						print(GetSelectedPedWeapon(ped),GetAmmoInPedWeapon(ped,883325847),GetVehicleFuelLevel(vehicle),canFuel,isNearPump)
 						if GetSelectedPedWeapon(ped) == 883325847 then
 							stringCoords = vehicleCoords
 							if GetAmmoInPedWeapon(ped,883325847) < 100 then
@@ -291,6 +292,8 @@ Citizen.CreateThread(function()
 						if GetVehicleFuelLevel(vehicle) < 99 and canFuel and isNearPump then
 							DrawtextUI("Press [E] to Re Fuel Vehicle",stringCoords,3.5,'renzu_fuel:open',{vehicle,output},false,false,'E')
 							--PopUI("Re Fuel Vehicle",stringCoords,3.5,'renzu_fuel:open',{vehicle,output},false)
+						elseif canFuel and GetVehicleFuelLevel(vehicle) < 99 then
+							DrawtextUI("Press [E] to Re Fuel Vehicle (PETROL CAN)",stringCoords,3.5,'renzu_fuel:refuelFromPump',{false,ped,vehicle},false,false,'E')
 						elseif not canFuel then
 							DrawtextUI("Cant Fuel",stringCoords,3.5,'dummyevent',{},false,false)
 						else
