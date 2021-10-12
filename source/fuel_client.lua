@@ -2,7 +2,8 @@ local isNearPump = false
 local isFueling = false
 local currentFuel = 0.0
 local currentCost = 0.0
-local currentCash = 1000
+local todaycoast = 0
+local currentCash = 0
 local fuelSynced = false
 local inBlacklisted = false
 
@@ -89,7 +90,7 @@ AddEventHandler('fuel:startFuelUpTick', function(pumpObject, ped, vehicle)
 
 		local oldFuel = DecorGetFloat(vehicle, Config.FuelDecor)
 		local fuelToAdd = math.random(10, 20) / 10.0
-		local extraCost = fuelToAdd / 1.5 * Config.CostMultiplier
+		--local extraCost = fuelToAdd / 1.5 * Config.CostMultiplier
 
 		if not pumpObject then
 			if GetAmmoInPedWeapon(ped, 883325847) - fuelToAdd * 100 >= 0 then
@@ -108,8 +109,9 @@ AddEventHandler('fuel:startFuelUpTick', function(pumpObject, ped, vehicle)
 			isFueling = false
 		end
 
-		currentCost = currentCost + extraCost
-
+		if extraCost >= 1 then
+			currentCost = currentCost + extraCost
+			todaycoast = extraCost
 		if currentCash >= currentCost then
 			SetFuel(vehicle, currentFuel)
 		else
@@ -118,7 +120,7 @@ AddEventHandler('fuel:startFuelUpTick', function(pumpObject, ped, vehicle)
 	end
 
 	if pumpObject then
-		TriggerServerEvent('fuel:pay', currentCost, GetPlayerServerId(PlayerId()))
+		TriggerServerEvent('fuel:pay', currentCost)
 	end
 
 	currentCost = 0.0
@@ -142,10 +144,11 @@ AddEventHandler('fuel:refuelFromPump', function(pumpObject, ped, vehicle)
 
 		if pumpObject then
 			local stringCoords = GetEntityCoords(pumpObject)
-			local extraString = "\n" .. Config.Strings.TotalCost .. ": ~g~$" .. Round(currentCost, 1)
+			local extraString = "\n" .. Config.Strings.TotalCost .. ": ~g~$" .. Round(todaycoast, 1)
 
 			DrawText3Ds(stringCoords.x, stringCoords.y, stringCoords.z + 1.2, Config.Strings.CancelFuelingPump .. extraString)
 			DrawText3Ds(vehicleCoords.x, vehicleCoords.y, vehicleCoords.z + 0.5, Round(currentFuel, 1) .. "%")
+			DrawText3Ds(vehicleCoords.x, vehicleCoords.y, vehicleCoords.z + 1.3, Round(currentCost, 1) ..   '~b~$~w~   cost')
 		else
 			DrawText3Ds(vehicleCoords.x, vehicleCoords.y, vehicleCoords.z + 0.5, Config.Strings.CancelFuelingJerryCan .. "\nGas can: ~g~" .. Round(GetAmmoInPedWeapon(ped, 883325847) / 4500 * 100, 1) .. "% | Vehicle: " .. Round(currentFuel, 1) .. "%")
 		end
