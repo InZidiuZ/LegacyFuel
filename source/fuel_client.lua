@@ -2,7 +2,7 @@ local isNearPump = false
 local isFueling = false
 local currentFuel = 0.0
 local currentCost = 0.0
-local todaycoast = 0
+local todaycost = 0
 local currentCash = 0
 local fuelSynced = false
 local inBlacklisted = false
@@ -109,9 +109,9 @@ AddEventHandler('fuel:startFuelUpTick', function(pumpObject, ped, vehicle)
 			isFueling = false
 		end
 
-		if extraCost >= 1 then
+ 		if extraCost >= 1 then
 			currentCost = currentCost + extraCost
-			todaycoast = extraCost
+			todaycost = extraCost
 		if currentCash >= currentCost then
 			SetFuel(vehicle, currentFuel)
 		else
@@ -144,7 +144,7 @@ AddEventHandler('fuel:refuelFromPump', function(pumpObject, ped, vehicle)
 
 		if pumpObject then
 			local stringCoords = GetEntityCoords(pumpObject)
-			local extraString = "\n" .. Config.Strings.TotalCost .. ": ~g~$" .. Round(todaycoast, 1)
+			local extraString = "\n" .. Config.Strings.TotalCost .. ": ~g~$" .. Round(todaycost, 1)
 
 			DrawText3Ds(stringCoords.x, stringCoords.y, stringCoords.z + 1.2, Config.Strings.CancelFuelingPump .. extraString)
 			DrawText3Ds(vehicleCoords.x, vehicleCoords.y, vehicleCoords.z + 0.5, Round(currentFuel, 1) .. "%")
