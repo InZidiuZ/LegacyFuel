@@ -5,10 +5,7 @@ author 'InZidiuZ'
 description 'Legacy Fuel'
 version '1.3'
 
-shared_scripts { 
-	'@qb-core/import.lua',
-	'config.lua'
-}
+shared_script 'config.lua'
 
 client_scripts {
 	'functions/functions_client.lua',
