@@ -83,6 +83,8 @@ CreateThread(function()
 	end
 end)
 
+local extraCost = math.random(3, 6)
+
 AddEventHandler('fuel:startFuelUpTick', function(pumpObject, ped, vehicle)
 	currentFuel = GetVehicleFuelLevel(vehicle)
 
@@ -113,15 +115,16 @@ AddEventHandler('fuel:startFuelUpTick', function(pumpObject, ped, vehicle)
  		if extraCost >= 1 then
 			currentCost = currentCost + extraCost
 			todaycost = extraCost
-		if currentCash >= currentCost then
-			SetFuel(vehicle, currentFuel)
-		else
-			isFueling = false
+			if currentCash >= currentCost then
+				SetFuel(vehicle, currentFuel)
+			else
+				isFueling = false
+			end
 		end
 	end
 
 	if pumpObject then
-		TriggerServerEvent('fuel:pay', currentCost)
+		TriggerServerEvent('fuel:pay', currentCost, GetPlayerServerId(PlayerId()))
 	end
 
 	currentCost = 0.0
