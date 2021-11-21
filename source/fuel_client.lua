@@ -124,7 +124,7 @@ AddEventHandler('fuel:startFuelUpTick', function(pumpObject, ped, vehicle)
 	end
 
 	if pumpObject then
-		TriggerServerEvent('fuel:pay', currentCost)
+		TriggerServerEvent('fuel:pay', currentCost, GetPlayerServerId(PlayerId()))
 	end
 
 	currentCost = 0.0
