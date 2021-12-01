@@ -118,13 +118,13 @@ Citizen.CreateThread(function()
 			local x,y,z = table.unpack(v)
 			blip[k] = AddBlipForCoord(x,y,z)
 			SetBlipSprite(blip[k], 361)
-			SetBlipDisplay(blip[k], 4)
+			SetBlipDisplay(blip[k], 5)
 			SetBlipScale(blip[k], 0.5)
 			SetBlipColour(blip[k], 1)
 			SetBlipAsShortRange(blip[k], true)
 
-			BeginTextCommandSetBlipName(k)
-			AddTextEntry(k, k)
+			BeginTextCommandSetBlipName('Gas Station')
+			AddTextEntry(k, 'Gas Station')
 			EndTextCommandSetBlipName(blip[k])
 		end
 	end
