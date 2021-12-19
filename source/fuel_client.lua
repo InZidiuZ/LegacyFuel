@@ -236,19 +236,19 @@ Citizen.CreateThread(function()
 				elseif isNearPump then
 					local stringCoords = GetEntityCoords(isNearPump)
 
-					if currentCash >= Config.JerryCanCost then
-						if not HasPedGotWeapon(ped, 883325847) then
-							DrawText3Ds(stringCoords.x, stringCoords.y, stringCoords.z + 1.2, Config.Strings.PurchaseJerryCan)
+					if Config.UseESX then
+						if currentCash >= Config.JerryCanCost then
+							if not HasPedGotWeapon(ped, 883325847) then
+								DrawText3Ds(stringCoords.x, stringCoords.y, stringCoords.z + 1.2, Config.Strings.PurchaseJerryCan)
 
-							if IsControlJustReleased(0, 38) then
-								GiveWeaponToPed(ped, 883325847, 4500, false, true)
+								if IsControlJustReleased(0, 38) then
+									GiveWeaponToPed(ped, 883325847, 4500, false, true)
 
-								TriggerServerEvent('fuel:pay', Config.JerryCanCost)
+									TriggerServerEvent('fuel:pay', Config.JerryCanCost)
 
-								currentCash = ESX.GetPlayerData().money
-							end
-						else
-							if Config.UseESX then
+									currentCash = ESX.GetPlayerData().money
+								end
+							else
 								local refillCost = Round(Config.RefillCost * (1 - GetAmmoInPedWeapon(ped, 883325847) / 4500))
 
 								if refillCost > 0 then
@@ -266,16 +266,28 @@ Citizen.CreateThread(function()
 								else
 									DrawText3Ds(stringCoords.x, stringCoords.y, stringCoords.z + 1.2, Config.Strings.JerryCanFull)
 								end
-							else
+							end
+						else
+							DrawText3Ds(stringCoords.x, stringCoords.y, stringCoords.z + 1.2, Config.Strings.NotEnoughCash)
+						end
+					else
+						if not HasPedGotWeapon(ped, 883325847) then
+							DrawText3Ds(stringCoords.x, stringCoords.y, stringCoords.z + 1.2, Config.Strings.PurchaseJerryCan)
+
+							if IsControlJustReleased(0, 38) then
+								GiveWeaponToPed(ped, 883325847, 4500, false, true)
+							end
+						else
+							if GetAmmoInPedWeapon(ped, 883325847) < 4500 then
 								DrawText3Ds(stringCoords.x, stringCoords.y, stringCoords.z + 1.2, Config.Strings.RefillJerryCan)
 
 								if IsControlJustReleased(0, 38) then
 									SetPedAmmo(ped, 883325847, 4500)
 								end
+							else
+								DrawText3Ds(stringCoords.x, stringCoords.y, stringCoords.z + 1.2, Config.Strings.JerryCanFull)
 							end
 						end
-					else
-						DrawText3Ds(stringCoords.x, stringCoords.y, stringCoords.z + 1.2, Config.Strings.NotEnoughCash)
 					end
 				else
 					Citizen.Wait(250)
