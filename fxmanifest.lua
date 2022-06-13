@@ -1,23 +1,23 @@
-fx_version 'bodacious'
-game 'gta5'
+fx_version "adamant"
+game "gta5"
 
-author 'InZidiuZ'
-description 'Legacy Fuel'
-version '1.3'
-
--- What to run
-client_scripts {
-	'config.lua',
-	'functions/functions_client.lua',
-	'source/fuel_client.lua'
-}
+ui_page 'html/ui.html'
 
 server_scripts {
-	'config.lua',
-	'source/fuel_server.lua'
+	"@mysql-async/lib/MySQL.lua",
+	"config.lua",
+	"server.lua"
 }
 
-exports {
-	'GetFuel',
-	'SetFuel'
+client_scripts {
+	"config.lua",
+	"client.lua"
 }
+
+dependency 'renzu_popui'
+files {
+  'html/ui.html',
+  'html/ui.css', 
+  'html/ui.js',
+  'html/logo.png'
+}              

@@ -1,0 +1,51 @@
+<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="ui.css">
+        <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,500;1,200&display=swap" rel="stylesheet">
+        <script src="ui.js"></script>
+    </head>
+    <body>
+        <left>
+            <img src="https://forum.cfx.re/uploads/default/original/4X/b/1/9/b196908c7e5dfcd60aa9dca0020119fa55e184cb.png">
+            <div class="act">
+                <button id="retirar">Full Tank</button>
+                <button id="guardar">Manual Fuel</button>
+                <button id="close" onclick="close();">Exit</button>
+            </div>
+        </left>
+        <div class="container">
+            <small>To fuel</small><br>
+            <span>Vehicle</span>
+            <div class="box">
+                <span id="title">Price to Pay</span>
+                <div class="item" style="border: none;">
+                    <button id="minus">-</button>
+                    <input id="amount" type="number" placeholder="$">
+                    <button id="plus" style="right: 5px;">+</button>
+                </div>
+            </div>
+            <div class="box">
+                <span id="title">Vehicle fuel</span>
+                <div class="item">
+                    <div class="litro">
+                        <span><span>$</span> 0.00</span>
+                    </div>
+                </div>
+            </div>
+            <div class="box">
+                <span id="title">Price per liter</span>
+                <div class="item">
+                    <span id="fuel-price"><span style="font-size: 18px;">$</span> 1.00</span>
+                </div>
+            </div>
+        </div>
+        <div class="modal">
+            <button class="accept btninfo">Confirm</button>
+            <span>Are you sure you want to fill the tank worth<br><b>$ 85,00</b></span>
+            <button class="recuse btninfo">Cancel</button>
+        </div>
+    </body>
+</html>
