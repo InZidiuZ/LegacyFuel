@@ -1,4 +1,4 @@
-fx_version 'bodacious'
+fx_version 'cerulean'
 game 'gta5'
 
 author 'InZidiuZ'
@@ -16,7 +16,4 @@ server_scripts {
 	'source/fuel_server.lua'
 }
 
-exports {
-	'GetFuel',
-	'SetFuel'
-}
+lua54 'yes'
