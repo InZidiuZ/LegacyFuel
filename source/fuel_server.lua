@@ -1,10 +1,18 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 
-RegisterNetEvent('fuel:pay', function(price, source)
-	local xPlayer = QBCore.Functions.GetPlayer(source)
+RegisterNetEvent('fuel:pay', function(price)
+	local Player = QBCore.Functions.GetPlayer(source)
 	local amount = math.floor(price + 0.5)
 
-	if price > 0 then
-		xPlayer.Functions.RemoveMoney('cash', amount)
-	end
+	if not Player or price <= 0 then return end
+
+	Player.Functions.RemoveMoney('cash', amount)
+end)
+
+RegisterNetEvent('fuel:addPetrolCan', function()
+	local Player = QBCore.Functions.GetPlayer(source)
+
+	if not Player then return end
+
+	Player.Functions.AddItem('weapon_petrolcan', 1)
 end)

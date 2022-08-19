@@ -2,6 +2,8 @@ function GetFuel(vehicle)
 	return DecorGetFloat(vehicle, Config.FuelDecor)
 end
 
+exports('GetFuel', GetFuel)
+
 function SetFuel(vehicle, fuel)
 	if type(fuel) == 'number' and fuel >= 0 and fuel <= 100 then
 		SetVehicleFuelLevel(vehicle, fuel + 0.0)
@@ -9,13 +11,14 @@ function SetFuel(vehicle, fuel)
 	end
 end
 
-function LoadAnimDict(dict)
-	if not HasAnimDictLoaded(dict) then
-		RequestAnimDict(dict)
+exports('SetFuel', SetFuel)
 
-		while not HasAnimDictLoaded(dict) do
-			Wait(1)
-		end
+function LoadAnimDict(dict)
+	if HasAnimDictLoaded(dict) then return end
+	RequestAnimDict(dict)
+
+	while not HasAnimDictLoaded(dict) do
+		Wait(10)
 	end
 end
 
@@ -41,7 +44,7 @@ function Round(num, numDecimalPlaces)
 end
 
 function CreateBlip(coords)
-	local blip = AddBlipForCoord(coords)
+	local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
 
 	SetBlipSprite(blip, 361)
 	SetBlipScale(blip, 0.6)
