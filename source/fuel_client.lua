@@ -1,5 +1,5 @@
 local QBCore = exports['qb-core']:GetCoreObject()
-local isNearPump = false
+local isNearPump = nil
 local isFueling = false
 local currentFuel = 0.0
 local currentCost = 0.0
@@ -42,8 +42,8 @@ CreateThread(function()
 
 		local ped = PlayerPedId()
 
-		if IsPedInAnyVehicle(ped) then
-			local vehicle = GetVehiclePedIsIn(ped)
+		if IsPedInAnyVehicle(ped, false) then
+			local vehicle = GetVehiclePedIsIn(ped, false)
 
 			if Config.Blacklist[GetEntityModel(vehicle)] then
 				inBlacklisted = true
@@ -76,7 +76,7 @@ CreateThread(function()
 			isNearPump = pumpObject
 			currentCash = QBCore.Functions.GetPlayerData().money['cash']
 		else
-			isNearPump = false
+			isNearPump = nil
 
 			Wait(math.ceil(pumpDistance * 20))
 		end
@@ -124,7 +124,7 @@ AddEventHandler('fuel:startFuelUpTick', function(pumpObject, ped, vehicle)
 	end
 
 	if pumpObject then
-		TriggerServerEvent('fuel:pay', currentCost, GetPlayerServerId(PlayerId()))
+		TriggerServerEvent('fuel:pay', currentCost)
 	end
 
 	currentCost = 0.0
@@ -135,13 +135,13 @@ AddEventHandler('fuel:refuelFromPump', function(pumpObject, ped, vehicle)
 	Wait(1000)
 	SetCurrentPedWeapon(ped, -1569615261, true)
 	LoadAnimDict("timetable@gardener@filling_can")
-	TaskPlayAnim(ped, "timetable@gardener@filling_can", "gar_ig_5_filling_can", 2.0, 8.0, -1, 50, 0, 0, 0, 0)
+	TaskPlayAnim(ped, "timetable@gardener@filling_can", "gar_ig_5_filling_can", 2.0, 8.0, -1, 50, 0, false, false, false)
 
 	TriggerEvent('fuel:startFuelUpTick', pumpObject, ped, vehicle)
 
 	while isFueling do
 		for _, controlIndex in pairs(Config.DisableKeys) do
-			DisableControlAction(0, controlIndex)
+			DisableControlAction(0, controlIndex, true)
 		end
 
 		local vehicleCoords = GetEntityCoords(vehicle)
@@ -158,7 +158,7 @@ AddEventHandler('fuel:refuelFromPump', function(pumpObject, ped, vehicle)
 		end
 
 		if not IsEntityPlayingAnim(ped, "timetable@gardener@filling_can", "gar_ig_5_filling_can", 3) then
-			TaskPlayAnim(ped, "timetable@gardener@filling_can", "gar_ig_5_filling_can", 2.0, 8.0, -1, 50, 0, 0, 0, 0)
+			TaskPlayAnim(ped, "timetable@gardener@filling_can", "gar_ig_5_filling_can", 2.0, 8.0, -1, 50, 0, false, false, false)
 		end
 
 		if IsControlJustReleased(0, 38) or DoesEntityExist(GetPedInVehicleSeat(vehicle, -1)) or (isNearPump and GetEntityHealth(pumpObject) <= 0) then
@@ -177,7 +177,7 @@ CreateThread(function()
 		local ped = PlayerPedId()
 
 		if not isFueling and ((isNearPump and GetEntityHealth(isNearPump) > 0) or (GetSelectedPedWeapon(ped) == 883325847 and not isNearPump)) then
-			if IsPedInAnyVehicle(ped) and GetPedInVehicleSeat(GetVehiclePedIsIn(ped), -1) == ped then
+			if IsPedInAnyVehicle(ped, false) and GetPedInVehicleSeat(GetVehiclePedIsIn(ped, false), -1) == ped then
 				local pumpCoords = GetEntityCoords(isNearPump)
 
 				DrawText3Ds(pumpCoords.x, pumpCoords.y, pumpCoords.z + 1.2, Config.Strings.ExitVehicle)
@@ -221,13 +221,13 @@ CreateThread(function()
 					local stringCoords = GetEntityCoords(isNearPump)
 
 					if currentCash >= Config.JerryCanCost then
-						if not HasPedGotWeapon(ped, 883325847) then
+						if not HasPedGotWeapon(ped, 883325847, false) then
 							DrawText3Ds(stringCoords.x, stringCoords.y, stringCoords.z + 1.2, Config.Strings.PurchaseJerryCan)
 
 							if IsControlJustReleased(0, 38) then
-								TriggerServerEvent('QBCore:Server:AddItem', "weapon_petrolcan", 1)
+								TriggerServerEvent('fuel:addPetrolCan')
 								TriggerEvent("inventory:client:ItemBox", QBCore.Shared.Items["weapon_petrolcan"], "add")
-								TriggerServerEvent('fuel:pay', Config.JerryCanCost, GetPlayerServerId(PlayerId()))
+								TriggerServerEvent('fuel:pay', Config.JerryCanCost)
 							end
 						else
 							local refillCost = Round(Config.RefillCost * (1 - GetAmmoInPedWeapon(ped, 883325847) / 4500))
@@ -237,7 +237,7 @@ CreateThread(function()
 									DrawText3Ds(stringCoords.x, stringCoords.y, stringCoords.z + 1.2, Config.Strings.RefillJerryCan .. refillCost)
 
 									if IsControlJustReleased(0, 38) then
-										TriggerServerEvent('fuel:pay', refillCost, GetPlayerServerId(PlayerId()))
+										TriggerServerEvent('fuel:pay', refillCost)
 
 										SetPedAmmo(ped, 883325847, 4500)
 									end
