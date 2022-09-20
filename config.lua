@@ -1,8 +1,5 @@
 Config = {}
 
--- Are you using ESX? Turn this to true if you would like fuel & jerry cans to cost something.
-Config.UseESX = true
-
 -- What should the price of jerry cans be?
 Config.JerryCanCost = 100
 Config.RefillCost = 50 -- If it is missing half of it capacity, this amount will be divided in half, and so on.
@@ -12,9 +9,6 @@ Config.FuelDecor = "_FUEL_LEVEL"
 
 -- What keys are disabled while you're fueling.
 Config.DisableKeys = {0, 22, 23, 24, 29, 30, 31, 37, 44, 56, 82, 140, 166, 167, 168, 170, 288, 289, 311, 323}
-
--- Want to use the HUD? Turn this to true.
-Config.EnableHUD = true
 
 -- Configure blips here. Turn both to false to disable blips all together.
 Config.ShowNearestGasStationOnly = true
@@ -38,11 +32,6 @@ Config.Strings = {
 	JerryCanFull = "Jerry can is full",
 	TotalCost = "Cost",
 }
-
-if not Config.UseESX then
-	Config.Strings.PurchaseJerryCan = "Press ~g~E ~w~to grab a jerry can"
-	Config.Strings.RefillJerryCan = "Press ~g~E ~w~ to refill the jerry can"
-end
 
 Config.PumpModels = {
 	[-2007231801] = true,
@@ -132,5 +121,6 @@ Config.GasStations = {
 	vector3(176.631, -1562.025, 29.263),
 	vector3(176.631, -1562.025, 29.263),
 	vector3(-319.292, -1471.715, 30.549),
+	vector3(-66.48, -2532.57, 6.14),
 	vector3(1784.324, 3330.55, 41.253)
 }

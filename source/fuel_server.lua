@@ -1,15 +1,18 @@
-ESX = nil
+local QBCore = exports['qb-core']:GetCoreObject()
 
-if Config.UseESX then
-	TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+RegisterNetEvent('fuel:pay', function(price)
+	local Player = QBCore.Functions.GetPlayer(source)
+	local amount = math.floor(price + 0.5)
 
-	RegisterServerEvent('fuel:pay')
-	AddEventHandler('fuel:pay', function(price)
-		local xPlayer = ESX.GetPlayerFromId(source)
-		local amount = ESX.Math.Round(price)
+	if not Player or price <= 0 then return end
 
-		if price > 0 then
-			xPlayer.removeMoney(amount)
-		end
-	end)
-end
+	Player.Functions.RemoveMoney('cash', amount)
+end)
+
+RegisterNetEvent('fuel:addPetrolCan', function()
+	local Player = QBCore.Functions.GetPlayer(source)
+
+	if not Player then return end
+
+	Player.Functions.AddItem('weapon_petrolcan', 1)
+end)
