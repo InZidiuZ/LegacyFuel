@@ -2,6 +2,8 @@ if Config.UseESX then
 	
 	ESX = exports["es_extended"]:getSharedObject()
 
+end
+	
 local isNearPump = false
 local isFueling = false
 local currentFuel = 0.0
