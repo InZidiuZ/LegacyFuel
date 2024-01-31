@@ -1,5 +1,6 @@
 ### About
-Started off as my first script, and for whatever reason, I decided to release the disguisting pile of shit. Felt bad after some time for leaving so many people with this horror of a script, so ended up spending a few hours rewriting it, so here you go. (:
+A very useful fuel script! This is an updated version by me for LegacyFuel! 
+(Updated FxManifest and removed deprecated code from client and server side)
 
 ### Installation
 1) Download the latest version in the "code" tab on GitHub.
