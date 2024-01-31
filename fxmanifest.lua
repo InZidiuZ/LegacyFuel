@@ -1,20 +1,17 @@
-fx_version 'bodacious'
+fx_version 'cerulean'
+
 game 'gta5'
 
-author 'InZidiuZ'
-description 'Legacy Fuel'
-version '1.3'
-
--- What to run
-client_scripts {
-	'config.lua',
-	'functions/functions_client.lua',
-	'source/fuel_client.lua'
-}
+shared_script '@es_extended/imports.lua'
 
 server_scripts {
 	'config.lua',
 	'source/fuel_server.lua'
+}
+
+client_scripts {
+	'config.lua',
+	'source/fuel_client.lua'
 }
 
 exports {
