@@ -1,5 +1,5 @@
 ### About
-Started off as my first script, and for whatever reason, I decided to release it. As it was pretty badly created, I felt like I should rewrite it and make a better version, so ended up spending a few hours doing so.
+Started off as my first script, and for whatever reason, I decided to release the disguisting pile of shit. Felt bad after some time for leaving so many people with this horror of a script, so ended up spending a few hours rewriting it, so here you go. (:
 
 ### Installation
 1) Download the latest version in the "code" tab on GitHub.
@@ -11,8 +11,8 @@ Started off as my first script, and for whatever reason, I decided to release it
 There are currently two (client-sided) exports available, which should help you control the fuel level for vehicles whenever needed.
 
 ```
-SetFuel(vehicle --[[ Vehicle ]], value --[[ Number: (0-100) ]])
-GetFuel(vehicle --[[ Vehicle ]]) -- Returns the vehicle's fuel level.
+SetFuel(--[[Vehicle--]] vehicle, --[[Float/Int: (0-100)--]] value)
+GetFuel(--[[Vehicle--]] vehicle) -- Returns the vehicle's fuel level.
 ```
 
 **Example usage:**
@@ -27,6 +27,6 @@ function StoreVehicleInGarage(vehicle)
     local plate = GetVehicleNumberPlateText(vehicle)
     local fuelLevel = exports["LegacyFuel"]:GetFuel(vehicle)
 
-    TriggerServerEvent('vehiclesStored', plate, fuelLevel)
+    TriggerServerEvent('vehiclesStored', plate, fuel)
 end
 ```
